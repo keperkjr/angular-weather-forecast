@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators'
 import { GeocodeLookup } from './models/geocodeLookup';
 import { GeocodeParse } from './models/geocodeParse';
 import { GeocodeApiService } from './services/api.service';
@@ -18,24 +20,51 @@ export class AppComponent implements OnInit {
         this.baseUrl = location.href;
     }
 
-    ngOnInit() {
+    ngOnInit() {}
+
+    async onClickTest() {
+        // let sub = service.call1().pipe(
+        //     switchMap(result1 => service.call2(result1)),
+        //     switchMap(result2 => service.call3(result2)),
+        //     switchMap(result3 => service.call4(result3)),
+        //     switchMap(result4 => service.call5(result4))
+        //   ) 
+
         var search = 'los angeles california usa';
-        var errorOccurred = false;
-        this.geocodeApi.lookup(search).subscribe({
-            next: (data) => {
-                console.log(data); 
-                if (data.error != null) {
-                    errorOccurred = true;
-                }        
-            },
-            error: (error) => {
-                console.log(error);
-                errorOccurred = true;
-            },
-        }).add(() => {
-            if (errorOccurred) {
-                alert(`Unable to determine location. Please enter another search term and try again!`);
-            }
-        });         
+
+        // this.geocodeApi.lookup(search).pipe(
+        //     switchMap((lookupResult) => {
+        //         console.log(lookupResult);
+        //         return this.geocodeApi.parse(Number(lookupResult.longt), Number(lookupResult.latt));
+        //     })
+        // ).subscribe({
+        //     next: (data) => {
+        //         console.log(data);
+        //     },
+        // });
+
+        let lookup = await lastValueFrom(this.geocodeApi.lookup(search));
+
+        console.log(lookup);
+        
+
+        // var search = 'los angeles california usa';
+        // var errorOccurred = false;
+        // this.geocodeApi.lookup(search).subscribe({
+        //     next: (data) => {
+        //         console.log(data); 
+        //         if (data.error != null) {
+        //             errorOccurred = true;
+        //         }        
+        //     },
+        //     error: (error) => {
+        //         console.log(error);
+        //         errorOccurred = true;
+        //     },
+        // }).add(() => {
+        //     if (errorOccurred) {
+        //         alert(`Unable to determine location. Please enter another search term and try again!`);
+        //     }
+        // });         
     }    
 }
