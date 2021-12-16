@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { GeocodeLookup } from '../models/geocodeLookup';
 import { GeocodeParse } from '../models/geocodeParse';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -17,8 +16,8 @@ export class ApiService {
 export class GeocodeApiService extends ApiService {
     baseUrl = 'https://geocode.xyz';
 
-    lookup(searchQuery: string) {     
-        return this.http.get<GeocodeLookup.Result>(`${this.baseUrl}/${searchQuery}?json=1`);           
+    lookup(search: string) {     
+        return this.http.get<GeocodeLookup.Result>(`${this.baseUrl}/${encodeURIComponent(search)}?json=1`);           
     }
 
     parse(longitude: number, latitude: number) {     

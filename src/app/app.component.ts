@@ -19,5 +19,23 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
+        var search = 'los angeles california usa';
+        var errorOccurred = false;
+        this.geocodeApi.lookup(search).subscribe({
+            next: (data) => {
+                console.log(data); 
+                if (data.error != null) {
+                    errorOccurred = true;
+                }        
+            },
+            error: (error) => {
+                console.log(error);
+                errorOccurred = true;
+            },
+        }).add(() => {
+            if (errorOccurred) {
+                alert(`Unable to determine location. Please enter another search term and try again!`);
+            }
+        });         
     }    
 }
