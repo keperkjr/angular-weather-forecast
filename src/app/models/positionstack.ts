@@ -1,45 +1,42 @@
 export namespace PositionStack {
     export interface Result {
-        latitude: number;
-        longitude: number;
-        label: string;
-        name: string;
-        type: string;
-        distance: number;
-        number: string;
-        street: string;
-        postal_code: string;
-        confidence: number;
-        region: string;
-        region_code: string;
-        administrative_area?: any;
-        neighbourhood: string;
-        country: string;
-        country_code: string;
-        map_url: string;
-    }
-
-    export interface Data {
-        results: Result[];
-    }
-
-    export interface Query {
-        type: string;
-        message: string;
-    }
-
-    export interface Context {
-        query: Query[];
-    }
-
-    export interface Error {
-        code: string;
-        message: string;
-        context: Context;
-    }
-
-    export interface Geocode {
-        data: Data;
-        error: Error;
-    }
+        data: Data[]
+        error: Error
+      }
+      
+      export interface Data {
+        latitude: number
+        longitude: number
+        type: string
+        name: string
+        number: any
+        postal_code: string
+        street: any
+        confidence: number
+        region: string
+        region_code: string
+        county: string
+        locality: string
+        administrative_area: any
+        neighbourhood: any
+        country: string
+        country_code: string
+        continent: string
+        label: string
+      }
+      
+      export interface Error {
+        code: string
+        message: string
+        context: Context
+      }
+      
+      export interface Context {
+        query: Query[]
+      }
+      
+      export interface Query {
+        type: string
+        message: string
+      }  
 }

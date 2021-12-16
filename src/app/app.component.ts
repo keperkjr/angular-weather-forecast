@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { GeocodeLookup } from './models/geocodeLookup';
-import { GeocodeLocation } from './models/geocodeLocation';
-import { GeocodeApiService } from './services/api.service';
+import { PositionStack } from './models/positionstack';
+import { PositionStackApiService } from './services/api.service';
 
 @Component({
   selector: 'app-root',
@@ -11,8 +10,8 @@ import { GeocodeApiService } from './services/api.service';
 })
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
-    geocodeLookup!: GeocodeLookup.Result;
-    geocodeLocation!: GeocodeLocation.Result;
+    geocodeForward!: PositionStack.Result;
+    geocodeReverse!: PositionStack.Result;
     searchQuery!: string;
     baseUrl: string;
     lastSearchData = {
@@ -21,85 +20,47 @@ export class AppComponent implements OnInit {
         latitude: 0
     };
 
-    constructor(private geocodeApi: GeocodeApiService) { 
+    constructor(private positionStackApi: PositionStackApiService) { 
         this.baseUrl = location.href;
     }
 
     ngOnInit() {}
 
-    async onClickTest() {
+    async onClickForwardTest() {
         this.searchQuery = '92780';
         try {            
-
-            let coords = await this.getSearchCoordinates(this.searchQuery);
+            if (this.geocodeForward == null || this.lastSearchData.searchQuery != this.searchQuery) {
+                this.geocodeForward = await firstValueFrom(this.positionStackApi.ForwardSearch(this.searchQuery));
+                console.log(this.geocodeForward);
+            }
+            if (this.geocodeForward.error != null) {
+                throw new Error(this.geocodeForward.error.message);
+            }            
             await this.delay(3000);
 
-            await this.displayForecast(coords.longitude, coords.latitude);
+            await this.displayForecast(this.geocodeForward.data[0].longitude, this.geocodeForward.data[0].latitude);
             this.lastSearchData.searchQuery = this.searchQuery;             
         } catch (error) {
             console.log(error);
             alert(`Unable to display forecast. Please enter another search term and try again!`);
         }             
     }
-
-    async getSearchCoordinates(searchQuery: string) {
-        this.geocodeLookup = await this.maybeGetGeocodeLookup(searchQuery);
-        if (this.geocodeLookup.error != null) {
-            throw new Error(this.geocodeLookup.error.description);
-        }
-
-        let longitude = 0;
-        let latitude = 0;
-        if (this.geocodeLookup.longt != null && this.geocodeLookup.latt != null) {
-            longitude = Number(this.geocodeLookup.longt);
-            latitude = Number(this.geocodeLookup.latt);
-        } else if (this.geocodeLookup.alt != null && this.geocodeLookup.alt.loc != null && this.geocodeLookup.alt.loc.length > 0) {
-            let loc = this.geocodeLookup.alt.loc[0];
-            if (loc.longt != null && loc.latt != null) {
-                longitude = Number(loc.longt);
-                latitude = Number(loc.latt);
-            }
-        } else {
-            throw new Error(`Unable to determine lookup location from search: ${this.searchQuery}`);
-        }
-        return {
-            longitude,
-            latitude,
-        };      
-    }
     
-    async displayForecast(longitude: number, latitude: number) {
+    async displayForecast(latitude: number, longitude: number) {
         try {
-            let location = await this.maybeGetGeocodeLocation(longitude, latitude);
+            if (this.geocodeReverse == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
+                this.geocodeReverse = await firstValueFrom(this.positionStackApi.ReverseSearch(longitude, latitude));
+                console.log(this.geocodeReverse);
+            }
 
             // Get forecase here
             this.lastSearchData.longitude = longitude;
-            this.lastSearchData.latitude = latitude; 
-            this.geocodeLocation = location;               
+            this.lastSearchData.latitude = latitude;            
         } catch (error) {
             console.log(error);
             alert(`Unable to display forecast. Please enter another search term and try again!`);
         }     
     } 
-    
-
-    async maybeGetGeocodeLocation(longitude: number, latitude: number) {
-        if (this.lastSearchData.longitude == longitude && this.lastSearchData.latitude == latitude) {
-            return this.geocodeLocation;
-        }
-        let newLocation = await firstValueFrom(this.geocodeApi.getLocation(longitude, latitude));
-        console.log(newLocation);
-        return newLocation;
-    }
-
-    async maybeGetGeocodeLookup(searchQuery: string) {
-        if (this.geocodeLookup != null && this.lastSearchData.searchQuery == searchQuery) {
-            return this.geocodeLookup;
-        }
-        let newLookup = await firstValueFrom(this.geocodeApi.lookup(searchQuery));
-        console.log(newLookup);
-        return newLookup;
-    }
 
     delay(timeout: number) {
         return new Promise(resolve => {
