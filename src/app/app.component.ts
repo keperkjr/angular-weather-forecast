@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators'
+import { firstValueFrom } from 'rxjs';
 import { GeocodeLookup } from './models/geocodeLookup';
-import { GeocodeParse } from './models/geocodeParse';
+import { GeocodeLocation } from './models/geocodeLocation';
 import { GeocodeApiService } from './services/api.service';
 
 @Component({
@@ -13,8 +12,14 @@ import { GeocodeApiService } from './services/api.service';
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     geocodeLookup!: GeocodeLookup.Result;
-    geocodeParse!: GeocodeParse.Result;
+    geocodeLocation!: GeocodeLocation.Result;
+    searchQuery!: string;
     baseUrl: string;
+    lastSearchData = {
+        searchQuery: '',
+        longitude: 0,
+        latitude: 0
+    };
 
     constructor(private geocodeApi: GeocodeApiService) { 
         this.baseUrl = location.href;
@@ -23,48 +28,82 @@ export class AppComponent implements OnInit {
     ngOnInit() {}
 
     async onClickTest() {
-        // let sub = service.call1().pipe(
-        //     switchMap(result1 => service.call2(result1)),
-        //     switchMap(result2 => service.call3(result2)),
-        //     switchMap(result3 => service.call4(result3)),
-        //     switchMap(result4 => service.call5(result4))
-        //   ) 
+        this.searchQuery = '92780';
+        try {            
 
-        var search = 'los angeles california usa';
+            let coords = await this.getSearchCoordinates(this.searchQuery);
+            await this.delay(3000);
 
-        // this.geocodeApi.lookup(search).pipe(
-        //     switchMap((lookupResult) => {
-        //         console.log(lookupResult);
-        //         return this.geocodeApi.parse(Number(lookupResult.longt), Number(lookupResult.latt));
-        //     })
-        // ).subscribe({
-        //     next: (data) => {
-        //         console.log(data);
-        //     },
-        // });
+            await this.displayForecast(coords.longitude, coords.latitude);
+            this.lastSearchData.searchQuery = this.searchQuery;             
+        } catch (error) {
+            console.log(error);
+            alert(`Unable to display forecast. Please enter another search term and try again!`);
+        }             
+    }
 
-        let lookup = await lastValueFrom(this.geocodeApi.lookup(search));
+    async getSearchCoordinates(searchQuery: string) {
+        this.geocodeLookup = await this.maybeGetGeocodeLookup(searchQuery);
+        if (this.geocodeLookup.error != null) {
+            throw new Error(this.geocodeLookup.error.description);
+        }
 
-        console.log(lookup);
-        
+        let longitude = 0;
+        let latitude = 0;
+        if (this.geocodeLookup.longt != null && this.geocodeLookup.latt != null) {
+            longitude = Number(this.geocodeLookup.longt);
+            latitude = Number(this.geocodeLookup.latt);
+        } else if (this.geocodeLookup.alt != null && this.geocodeLookup.alt.loc != null && this.geocodeLookup.alt.loc.length > 0) {
+            let loc = this.geocodeLookup.alt.loc[0];
+            if (loc.longt != null && loc.latt != null) {
+                longitude = Number(loc.longt);
+                latitude = Number(loc.latt);
+            }
+        } else {
+            throw new Error(`Unable to determine lookup location from search: ${this.searchQuery}`);
+        }
+        return {
+            longitude,
+            latitude,
+        };      
+    }
+    
+    async displayForecast(longitude: number, latitude: number) {
+        try {
+            let location = await this.maybeGetGeocodeLocation(longitude, latitude);
 
-        // var search = 'los angeles california usa';
-        // var errorOccurred = false;
-        // this.geocodeApi.lookup(search).subscribe({
-        //     next: (data) => {
-        //         console.log(data); 
-        //         if (data.error != null) {
-        //             errorOccurred = true;
-        //         }        
-        //     },
-        //     error: (error) => {
-        //         console.log(error);
-        //         errorOccurred = true;
-        //     },
-        // }).add(() => {
-        //     if (errorOccurred) {
-        //         alert(`Unable to determine location. Please enter another search term and try again!`);
-        //     }
-        // });         
-    }    
+            // Get forecase here
+            this.lastSearchData.longitude = longitude;
+            this.lastSearchData.latitude = latitude; 
+            this.geocodeLocation = location;               
+        } catch (error) {
+            console.log(error);
+            alert(`Unable to display forecast. Please enter another search term and try again!`);
+        }     
+    } 
+    
+
+    async maybeGetGeocodeLocation(longitude: number, latitude: number) {
+        if (this.lastSearchData.longitude == longitude && this.lastSearchData.latitude == latitude) {
+            return this.geocodeLocation;
+        }
+        let newLocation = await firstValueFrom(this.geocodeApi.getLocation(longitude, latitude));
+        console.log(newLocation);
+        return newLocation;
+    }
+
+    async maybeGetGeocodeLookup(searchQuery: string) {
+        if (this.geocodeLookup != null && this.lastSearchData.searchQuery == searchQuery) {
+            return this.geocodeLookup;
+        }
+        let newLookup = await firstValueFrom(this.geocodeApi.lookup(searchQuery));
+        console.log(newLookup);
+        return newLookup;
+    }
+
+    delay(timeout: number) {
+        return new Promise(resolve => {
+            setTimeout(resolve, timeout);
+        });
+    }
 }

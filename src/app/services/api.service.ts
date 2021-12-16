@@ -1,13 +1,13 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { GeocodeLookup } from '../models/geocodeLookup';
-import { GeocodeParse } from '../models/geocodeParse';
+import { GeocodeLocation } from '../models/geocodeLocation';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {    
-    constructor(protected http: HttpClient) { }    
+    constructor(protected http: HttpClient) { }       
 }
 
 @Injectable({
@@ -16,13 +16,15 @@ export class ApiService {
 export class GeocodeApiService extends ApiService {
     baseUrl = 'https://geocode.xyz';
 
-    lookup(search: string) {     
-        console.log(`${this.baseUrl}/${encodeURIComponent(search)}?json=1`);
-        return this.http.get<GeocodeLookup.Result>(`${this.baseUrl}/${encodeURIComponent(search)}?json=1`);           
+    lookup(search: string) {
+        let url = `${this.baseUrl}/${encodeURIComponent(search)}?json=1`; 
+        console.log(url);
+        return this.http.get<GeocodeLookup.Result>(url);           
     }
 
-    parse(longitude: number, latitude: number) {  
-        console.log(`${this.baseUrl}/${latitude},${longitude}?json=1`);   
-        return this.http.get<GeocodeParse.Result>(`${this.baseUrl}/${latitude},${longitude}?json=1`);           
+    getLocation(longitude: number, latitude: number) {
+        let url = `${this.baseUrl}/${latitude},${longitude}?json=1`; 
+        console.log(url);   
+        return this.http.get<GeocodeLocation.Result>(url);           
     }    
 }

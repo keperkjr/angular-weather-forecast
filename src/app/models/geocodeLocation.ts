@@ -1,4 +1,4 @@
-export namespace GeocodeParse {
+export namespace GeocodeLocation {
     export interface Result {
       statename: string
       distance: string
