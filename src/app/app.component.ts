@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { PositionStack } from './models/positionstack';
 import { PositionStackApiService } from './services/api.service';
+const Utils = require('./utils/utils.js');
+
+// import { Utils } from './utils';
 
 @Component({
   selector: 'app-root',
@@ -26,7 +29,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {}
 
-    async onClickForwardTest() {
+    async onClickSearchTest() {
         this.searchQuery = '92780';
         try {            
             if (this.geocodeForward == null || this.lastSearchData.searchQuery != this.searchQuery) {
@@ -45,14 +48,24 @@ export class AppComponent implements OnInit {
             alert(`Unable to display forecast. Please enter another search term and try again!`);
         }             
     }
+
+    async onClickLocationTest() {
+        let position = await Utils.getCurrentPosition();
+
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        if (this.geocodeReverse == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
+            this.geocodeReverse = await firstValueFrom(this.positionStackApi.ReverseSearch(latitude, longitude));
+            console.log(this.geocodeReverse);
+        }
+    }
+
+    async onClickIPAddressTest() {
+
+    }    
     
     async displayForecast(latitude: number, longitude: number) {
         try {
-            if (this.geocodeReverse == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
-                this.geocodeReverse = await firstValueFrom(this.positionStackApi.ReverseSearch(longitude, latitude));
-                console.log(this.geocodeReverse);
-            }
-
             // Get forecase here
             this.lastSearchData.longitude = longitude;
             this.lastSearchData.latitude = latitude;            

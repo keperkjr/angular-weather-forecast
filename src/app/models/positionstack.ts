@@ -28,15 +28,5 @@ export namespace PositionStack {
       export interface Error {
         code: string
         message: string
-        context: Context
-      }
-      
-      export interface Context {
-        query: Query[]
-      }
-      
-      export interface Query {
-        type: string
-        message: string
-      }  
+      } 
 }
