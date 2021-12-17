@@ -7,7 +7,10 @@
   />
 
   <div class="center">
-      <app-location-search></app-location-search>
+      <app-location-search
+        (searchLocation)="onSearchLocation($event)"
+      >
+      </app-location-search>
   </div>
 </div>
 

@@ -60,7 +60,7 @@ export class AppComponent implements OnInit {
         
         let forecast = await this.getForecast(latitude, longitude);
         this.currentWeather = forecast.currentWeather;
-        
+
         this.weatherApiAvailable = true;
     }
 
@@ -178,5 +178,11 @@ export class AppComponent implements OnInit {
         } else {
             alert(`Unable to display forecast. Please try again!`);
         }
+    }
+
+    onSearchLocation(eventData: any) {
+        console.log(eventData);
+
+        this.searchQuery = eventData.searchQuery;
     }    
 }
