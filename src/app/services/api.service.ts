@@ -27,8 +27,8 @@ export class PositionStackApiService extends ApiService {
     ReverseSearch(latitude: number, longitude: number): any;   
     ReverseSearch(param1: string | number, param2?: string | number): any {
         let search = '';
-        if (param1 == null) {
-            search = param1;
+        if (param2 == null) {
+            search = `${param1}`;
         } else {
             search = `${param1},${param2}`;
         }
