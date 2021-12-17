@@ -2,8 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { PositionStack } from './models/positionstack';
+import { WeatherBit } from './models/weatherbit';
 import { PositionStackApiService, WeatherBitApiService } from './services/api.service';
 import { Utils } from './utils';
+
+enum SearchType {
+    IP,
+    Query,
+    GPS,
+}
 
 @Component({
   selector: 'app-root',
@@ -12,9 +19,12 @@ import { Utils } from './utils';
 })
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
-    geocodeForward!: PositionStack.Result;
-    geocodeReverse!: PositionStack.Result;
-    geocodeDisplay!: PositionStack.Result;
+    locationApiAvailable = false;
+
+    location!: PositionStack.Result;
+    currentWeather!: WeatherBit.Result;
+    futureWeather!: WeatherBit.Result;
+
     searchQuery!: string;
     baseUrl: string;
     ipAddress = '';
@@ -29,8 +39,24 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.getIPAddress().then((data: any) => {
-            this.ipAddress = data.ip;
+        this.getIPAddress().then((ipData: any) => {
+            this.ipAddress = ipData.ip;
+            this.getLocation(SearchType.IP).then((locationData) => {
+                this.locationApiAvailable = true;
+                this.location = locationData;
+
+                let info = this.location.data[0];
+                let longitude = info.longitude;
+                let latitude = info.latitude;
+
+                this.getForecast(longitude, latitude).then((forecastData) => {
+                    this.currentWeather = forecastData;
+                }).catch((error) => {
+                    console.log(error);
+                });
+            }).catch((error) => {
+                console.log(error);
+            });
         }).catch((error) => {
             console.log(error);
         });
@@ -43,19 +69,13 @@ export class AppComponent implements OnInit {
     async onClickSearchTest() {
         this.searchQuery = '92780';
         try {            
-            if (this.geocodeForward == null || this.lastSearchData.searchQuery != this.searchQuery) {
-                this.geocodeForward = await firstValueFrom(this.positionStackApi.getForwardSearch(this.searchQuery));
-                console.log(this.geocodeForward);
-            }           
-            await this.delay(3000);
-            
-            this.displayLocation(this.geocodeForward)
+            this.location = await this.getLocation(SearchType.Query);
 
-            let info = this.geocodeForward.data[0];
+            let info = this.location.data[0];
             let longitude = info.longitude;
             let latitude = info.latitude;
 
-            await this.displayForecast(longitude, latitude);
+            await this.getForecast(longitude, latitude);
 
             this.lastSearchData.searchQuery = this.searchQuery;             
         } catch (error) {
@@ -66,17 +86,13 @@ export class AppComponent implements OnInit {
 
     async onClickLocationTest() {
         try {
-            let position = await Utils.getCurrentPosition();
+            this.location = await this.getLocation(SearchType.GPS);
 
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            if (this.geocodeReverse == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
-                this.geocodeReverse = await firstValueFrom(this.positionStackApi.getReverseSearch(latitude, longitude));
-                console.log(this.geocodeReverse);
-            }
+            let info = this.location.data[0];
+            let longitude = info.longitude;
+            let latitude = info.latitude;
 
-            this.displayLocation(this.geocodeReverse);
-            await this.displayForecast(longitude, latitude);
+            await this.getForecast(longitude, latitude);
 
             this.lastSearchData.longitude = longitude;
             this.lastSearchData.latitude = latitude;              
@@ -88,51 +104,45 @@ export class AppComponent implements OnInit {
                 alert(`Unable to display forecast. Location could not be detected. Please try again!`);
             }
         }    
-    }
-
-    async onClickIPAddressTest() {
-        try {
-            this.geocodeReverse = await firstValueFrom(this.positionStackApi.getReverseSearch(this.ipAddress));
-            console.log(this.geocodeReverse);
-
-            this.displayLocation(this.geocodeReverse);
-
-            let info = this.geocodeReverse.data[0];
-            let longitude = info.longitude;
-            let latitude = info.latitude;
-
-            await this.displayForecast(longitude, latitude);
-        } catch (error: any) {
-            console.log(error);
-            alert(`Unable to display forecast. Location from IP Address could not be detected. Please try again!`);
-        } 
-    }    
+    }   
     
-    async displayForecast(latitude: number, longitude: number) {
-
+    async getForecast(latitude: number, longitude: number) {
         // Get forecase here
+        let currentWeather = this.currentWeather;
 
-        let currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
+        currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
         console.log(currentWeather);
+
+        return currentWeather;
     } 
 
-    displayLocation(geocode: PositionStack.Result) {
+    async getLocation(type: SearchType) {
+        let geocode = this.location;
+        switch(type) {
+            case SearchType.IP:
+                geocode = await firstValueFrom(this.positionStackApi.getReverseSearch(this.ipAddress));
+                break;
+            case SearchType.Query:
+                if (geocode == null || this.lastSearchData.searchQuery != this.searchQuery) {
+                    geocode = await firstValueFrom(this.positionStackApi.getForwardSearch(this.searchQuery));
+                }                
+                break;
+            case SearchType.GPS:
+                let position = await Utils.getCurrentPosition();
+                let latitude = position.coords.latitude;
+                let longitude = position.coords.longitude;
+                if (geocode == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
+                    geocode = await firstValueFrom(this.positionStackApi.getReverseSearch(latitude, longitude));
+                }
+                break;
+            default:
+                throw new Error(`Unknown search type: ${type}`);
+                break;
+        }
+        console.log(geocode);
         if (geocode.error != null) {
             throw new Error(geocode.error.message);
-        }
-        let info = geocode.data[0];
-
-        let longitude = info.longitude;
-        let latitude = info.latitude;
-        let city = info.locality;
-        let region = info.region;   
-        
-        this.geocodeDisplay = geocode;        
-    }
-
-    delay(timeout: number) {
-        return new Promise(resolve => {
-            setTimeout(resolve, timeout);
-        });
+        } 
+        return geocode;        
     }
 }
