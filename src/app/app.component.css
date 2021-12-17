@@ -6,24 +6,46 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
+  .mat-form-field{
+    background-color: white;
+    color: black;
+  }  
+  .location-search-container {
+      width: 500px;
+      overflow: hidden;
+  }
   .input-location-search {
-      width: 85%;
+      width: 70%;
+      margin-bottom: -1.30em;
+  }
+  .btn-location-search, .btn-gps {
+      vertical-align: top; 
+      padding: 8px;   
   }
   .btn-location-search {
-      vertical-align: top; 
-      padding: 8px;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;      
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
   }
+  .btn-gps {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }  
   .gps-search-container {
       margin-top: 15px;
   }
   .location-search-description {
       margin-bottom: 8px;
   }
+  @media screen and (max-width: 767px) {
+    .location-search-container {
+        width: 300px;
+    }
+    .input-location-search {
+        width: 55%;
+    }    
+  }
+
   .center {
-      text-align: center;
       margin-left: auto;
       margin-right: auto;
   }
