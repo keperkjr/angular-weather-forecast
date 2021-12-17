@@ -11,7 +11,7 @@ import { RuntimeError } from './models/errors';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css', '../assets/css/divider.css']
 })
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
@@ -69,7 +69,6 @@ export class AppComponent implements OnInit {
     }    
 
     async onClickSearchTest() {
-        this.searchQuery = '92780';
         try {            
             this.location = await this.getLocation(LocationSearch.Type.SearchQuery, {
                 searchQuery: this.searchQuery

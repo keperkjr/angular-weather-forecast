@@ -32,7 +32,8 @@ export class PositionStackApiService extends ApiService {
     key = '4e1d9e890cc83764371967a10d4f7be9';
 
     getForwardSearch(search: string) {
-        let url = `${this.baseUrl}/forward?access_key=${this.key}&query=${encodeURIComponent(search)}&limit=1`; 
+        //&limit=1
+        let url = `${this.baseUrl}/forward?access_key=${this.key}&query=${encodeURIComponent(search)}`; 
         console.log(url);
         return this.http.get<PositionStack.Result>(url);           
     }
