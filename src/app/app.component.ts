@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { PositionStack } from './models/positionstack';
 import { PositionStackApiService } from './services/api.service';
-const Utils = require('./utils/utils.js');
-
-// import { Utils } from './utils';
+import { Utils } from './utils';
 
 @Component({
   selector: 'app-root',
