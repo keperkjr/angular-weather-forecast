@@ -8,10 +8,9 @@
   }
 
   .input-location-search {
-      width: 80%;
+      width: 85%;
   }
   .btn-location-search {
-      width: 20%; 
       vertical-align: top; 
       padding: 8px;
       border-top-left-radius: 0;

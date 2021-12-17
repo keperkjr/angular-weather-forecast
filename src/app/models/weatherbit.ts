@@ -1,10 +1,10 @@
 export namespace WeatherBit {    
     export interface Result {
-        data: Data[]
+        data: Weather[]
         count: number
     }
     
-    export interface Data {
+    export interface Weather {
         rh: number
         pod: string
         lon: number

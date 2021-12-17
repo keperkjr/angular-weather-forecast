@@ -18,8 +18,9 @@ export class AppComponent implements OnInit {
     locationApiAvailable = false;
     weatherApiAvailable = true;
 
-    location!: PositionStack.Result;
-    currentWeather!: WeatherBit.Result;
+    locationResults!: PositionStack.Result;
+    selectedLocation!: PositionStack.Location;
+    currentWeather!: WeatherBit.Weather;
     futureWeather!: WeatherBit.Result;
 
     searchQuery!: string;
@@ -36,25 +37,8 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        // this.getIPAddress().then((ipData: any) => {
-        //     this.ipAddress = ipData.ip;
-        //     this.getLocation(LocationSearch.Type.IP, {ipAddress: this.ipAddress}).then((locationData) => {
-        //         this.locationApiAvailable = true;
-        //         this.location = locationData;
-
-        //         let info = this.location.data[0];
-        //         let longitude = info.longitude;
-        //         let latitude = info.latitude;
-
-        //         this.getForecast(latitude, longitude).then((forecastData) => {
-        //             this.currentWeather = forecastData;
-        //             this.weatherApiAvailable = true;
-        //         }).catch((error) => {
-        //             console.log(error);
-        //         });
-        //     }).catch((error) => {
-        //         console.log(error);
-        //     });
+        // this.getInitialLocation().then(() => {
+        //     console.log('Initial location loaded')
         // }).catch((error) => {
         //     console.log(error);
         // });
@@ -64,21 +48,38 @@ export class AppComponent implements OnInit {
         }
     }
 
-    async getIPAddress() {
+    async getInitialLocation() {
+        let ipData = await this.getIPAddress();
+        this.ipAddress = ipData.ip;
+        this.locationResults = await this.getLocation(LocationSearch.Type.IP, {ipAddress: this.ipAddress});
+        this.locationApiAvailable = true;
+
+        let info = this.locationResults.data[0];
+        let longitude = info.longitude;
+        let latitude = info.latitude;
+        
+        let forecast = await this.getForecast(latitude, longitude);
+        this.currentWeather = forecast.currentWeather;
+        
+        this.weatherApiAvailable = true;
+    }
+
+    async getIPAddress(): Promise<any> {
         return firstValueFrom(this.http.get("http://api.ipify.org/?format=json"));
     }    
 
     async onClickSearchTest() {
         try {            
-            this.location = await this.getLocation(LocationSearch.Type.SearchQuery, {
+            this.locationResults = await this.getLocation(LocationSearch.Type.SearchQuery, {
                 searchQuery: this.searchQuery
             });
 
-            let info = this.location.data[0];
+            let info = this.locationResults.data[0];
             let longitude = info.longitude;
             let latitude = info.latitude;
 
-            this.currentWeather = await this.getForecast(latitude, longitude);
+            let forecast = await this.getForecast(latitude, longitude);
+            this.currentWeather = forecast.currentWeather;
 
             this.lastSearchData.searchQuery = this.searchQuery;             
         } catch (error) {
@@ -92,11 +93,12 @@ export class AppComponent implements OnInit {
             let latitude = position.coords.latitude;
             let longitude = position.coords.longitude;
             
-            this.location = await this.getLocation(LocationSearch.Type.GPS, {
+            this.locationResults = await this.getLocation(LocationSearch.Type.GPS, {
                 latitude, longitude
             });
 
-            this.currentWeather = await this.getForecast(latitude, longitude);
+            let forecast = await this.getForecast(latitude, longitude);
+            this.currentWeather = forecast.currentWeather;
 
             this.lastSearchData.longitude = longitude;
             this.lastSearchData.latitude = latitude;              
@@ -107,17 +109,19 @@ export class AppComponent implements OnInit {
     
     async getForecast(latitude: number, longitude: number) {
         // Get forecase here
-        let currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
-        console.log(currentWeather);
-        if (currentWeather.count == 0 || currentWeather.data.length == 0) {
+        let currentWeatherResults = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
+        console.log(currentWeatherResults);
+        if (currentWeatherResults.count == 0 || currentWeatherResults.data.length == 0) {
             throw new RuntimeError.ForecastError(`No weather results returned for latitude: ${latitude}, longitude: ${longitude}`);
         }
-        return currentWeather;
+        return {
+            currentWeather: currentWeatherResults.data[0],
+        };
     } 
 
     // TODO: Only do this if location api is available
     async getLocation(type: LocationSearch.Type, options: LocationSearch.Options) {
-        let geocode = this.location;
+        let geocode = this.locationResults;
         switch(type) {
             case LocationSearch.Type.IP:
                 geocode = await firstValueFrom(this.positionStackApi.getReverseSearch(options.ipAddress || ''));

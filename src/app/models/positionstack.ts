@@ -1,10 +1,10 @@
 export namespace PositionStack {
     export interface Result {
-        data: Data[]
+        data: Location[]
         error: Error
       }
       
-      export interface Data {
+      export interface Location {
         latitude: number
         longitude: number
         type: string
