@@ -48,8 +48,15 @@ export class AppComponent implements OnInit {
                 console.log(this.geocodeForward);
             }           
             await this.delay(3000);
+            
+            this.displayLocation(this.geocodeForward)
 
-            await this.displayForecast(this.geocodeForward);
+            let info = this.geocodeForward.data[0];
+            let longitude = info.longitude;
+            let latitude = info.latitude;
+
+            await this.displayForecast(longitude, latitude);
+
             this.lastSearchData.searchQuery = this.searchQuery;             
         } catch (error) {
             console.log(error);
@@ -68,7 +75,8 @@ export class AppComponent implements OnInit {
                 console.log(this.geocodeReverse);
             }
 
-            await this.displayForecast(this.geocodeReverse);
+            this.displayLocation(this.geocodeReverse);
+            await this.displayForecast(longitude, latitude);
 
             this.lastSearchData.longitude = longitude;
             this.lastSearchData.latitude = latitude;              
@@ -87,14 +95,28 @@ export class AppComponent implements OnInit {
             this.geocodeReverse = await firstValueFrom(this.positionStackApi.getReverseSearch(this.ipAddress));
             console.log(this.geocodeReverse);
 
-            await this.displayForecast(this.geocodeReverse);
+            this.displayLocation(this.geocodeReverse);
+
+            let info = this.geocodeReverse.data[0];
+            let longitude = info.longitude;
+            let latitude = info.latitude;
+
+            await this.displayForecast(longitude, latitude);
         } catch (error: any) {
             console.log(error);
             alert(`Unable to display forecast. Location from IP Address could not be detected. Please try again!`);
         } 
     }    
     
-    async displayForecast(geocode: PositionStack.Result) {
+    async displayForecast(latitude: number, longitude: number) {
+
+        // Get forecase here
+
+        let currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
+        console.log(currentWeather);
+    } 
+
+    displayLocation(geocode: PositionStack.Result) {
         if (geocode.error != null) {
             throw new Error(geocode.error.message);
         }
@@ -103,15 +125,10 @@ export class AppComponent implements OnInit {
         let longitude = info.longitude;
         let latitude = info.latitude;
         let city = info.locality;
-        let region = info.region;
-        // Get forecase here
-
-        let currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
-        console.log(currentWeather);
-
+        let region = info.region;   
         
-        this.geocodeDisplay = geocode;
-    } 
+        this.geocodeDisplay = geocode;        
+    }
 
     delay(timeout: number) {
         return new Promise(resolve => {
