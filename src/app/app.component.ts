@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { PositionStack } from './models/positionstack';
-import { PositionStackApiService } from './services/api.service';
+import { PositionStackApiService, WeatherBitApiService } from './services/api.service';
 import { Utils } from './utils';
 
 @Component({
@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
         latitude: 0
     };
 
-    constructor(private http: HttpClient, private positionStackApi: PositionStackApiService) { 
+    constructor(private http: HttpClient, private positionStackApi: PositionStackApiService, private weatherBitApi: WeatherBitApiService) { 
         this.baseUrl = location.href;
     }
 
@@ -44,7 +44,7 @@ export class AppComponent implements OnInit {
         this.searchQuery = '92780';
         try {            
             if (this.geocodeForward == null || this.lastSearchData.searchQuery != this.searchQuery) {
-                this.geocodeForward = await firstValueFrom(this.positionStackApi.ForwardSearch(this.searchQuery));
+                this.geocodeForward = await firstValueFrom(this.positionStackApi.getForwardSearch(this.searchQuery));
                 console.log(this.geocodeForward);
             }           
             await this.delay(3000);
@@ -64,7 +64,7 @@ export class AppComponent implements OnInit {
             let latitude = position.coords.latitude;
             let longitude = position.coords.longitude;
             if (this.geocodeReverse == null || (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
-                this.geocodeReverse = await firstValueFrom(this.positionStackApi.ReverseSearch(latitude, longitude));
+                this.geocodeReverse = await firstValueFrom(this.positionStackApi.getReverseSearch(latitude, longitude));
                 console.log(this.geocodeReverse);
             }
 
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
 
     async onClickIPAddressTest() {
         try {
-            this.geocodeReverse = await firstValueFrom(this.positionStackApi.ReverseSearch(this.ipAddress));
+            this.geocodeReverse = await firstValueFrom(this.positionStackApi.getReverseSearch(this.ipAddress));
             console.log(this.geocodeReverse);
 
             await this.displayForecast(this.geocodeReverse);
@@ -104,10 +104,12 @@ export class AppComponent implements OnInit {
         let latitude = info.latitude;
         let city = info.locality;
         let region = info.region;
+        // Get forecase here
+
+        let currentWeather = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
+        console.log(currentWeather);
+
         
-        // Get forecase here 
-
-
         this.geocodeDisplay = geocode;
     } 
 

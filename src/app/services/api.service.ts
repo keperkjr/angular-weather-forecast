@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { PositionStack } from '../models/positionstack';
-import { Observable } from 'rxjs';
+import { WeatherBit } from '../models/weatherbit';
 
 @Injectable({
   providedIn: 'root'
@@ -13,19 +13,33 @@ export class ApiService {
 @Injectable({
     providedIn: 'root'
 })
+export class WeatherBitApiService extends ApiService {
+    baseUrl = 'https://api.weatherbit.io/v2.0';
+    key = 'cb5f7550ce814ad6b74f515651f72b79';
+
+    getCurrentWeather(latitude: number, longitude: number) {
+        let url = `${this.baseUrl}/current?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`; 
+        console.log(url);
+        return this.http.get<WeatherBit.Result>(url);           
+    }      
+}
+
+@Injectable({
+    providedIn: 'root'
+})
 export class PositionStackApiService extends ApiService {
     baseUrl = 'http://api.positionstack.com/v1';
     key = '4e1d9e890cc83764371967a10d4f7be9';
 
-    ForwardSearch(search: string) {
+    getForwardSearch(search: string) {
         let url = `${this.baseUrl}/forward?access_key=${this.key}&query=${encodeURIComponent(search)}&limit=1`; 
         console.log(url);
         return this.http.get<PositionStack.Result>(url);           
     }
 
-    ReverseSearch(ipAddress: string): any;
-    ReverseSearch(latitude: number, longitude: number): any;   
-    ReverseSearch(param1: string | number, param2?: string | number): any {
+    getReverseSearch(ipAddress: string): any;
+    getReverseSearch(latitude: number, longitude: number): any;   
+    getReverseSearch(param1: string | number, param2?: string | number): any {
         let search = '';
         if (param2 == null) {
             search = `${param1}`;
