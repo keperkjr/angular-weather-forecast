@@ -1,4 +1,4 @@
-export namespace LocationSearch {
+export namespace ForecastLocationSearch {
     export enum Type {
         IP,
         SearchQuery,

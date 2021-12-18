@@ -1,20 +1,20 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { LocationSearch } from '../models/locationsearch';
+import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { Utils } from '../utils';
 
 interface EventData {
     searchQuery: string;
     latitude: number;
     longitude: number;
-    type: LocationSearch.Type;
+    type: ForecastLocationSearch.Type;
 }
 
 @Component({
-  selector: 'app-location-search',
-  templateUrl: './location-search.component.html',
-  styleUrls: ['./location-search.component.css']
+  selector: 'app-forecast-location-search',
+  templateUrl: './forecast-location-search.component.html',
+  styleUrls: ['./forecast-location-search.component.css']
 })
-export class LocationSearchComponent implements OnInit {
+export class ForecastForecastLocationSearchComponent implements OnInit {
     searchQuery!: string;
 
     @Output('searchLocation')
@@ -41,7 +41,7 @@ export class LocationSearchComponent implements OnInit {
         }
         let eventData = this.newEventData();
         eventData.searchQuery = this.searchQuery,
-        eventData.type = LocationSearch.Type.SearchQuery,
+        eventData.type = ForecastLocationSearch.Type.SearchQuery,
 
         this.searchLocationEmitter.emit(eventData);
     }
@@ -54,7 +54,7 @@ export class LocationSearchComponent implements OnInit {
 
             eventData.latitude = position.coords.latitude,
             eventData.longitude = position.coords.longitude,
-            eventData.type = LocationSearch.Type.GPS,
+            eventData.type = ForecastLocationSearch.Type.GPS,
 
             this.searchLocationEmitter.emit(eventData);
         } catch (error) {

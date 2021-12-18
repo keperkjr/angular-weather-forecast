@@ -7,13 +7,18 @@
   />
 
   <div class="center">
-      <app-location-search
+      <app-forecast-location-search
         (searchLocation)="onSearchLocation($event)"
       >
-      </app-location-search>
+      </app-forecast-location-search>
   </div>
 </div>
 
 <div class="content" role="main">
+    <div>
+        <app-forecast-location
+        >
+        </app-forecast-location>
+    </div>
 </div>
 

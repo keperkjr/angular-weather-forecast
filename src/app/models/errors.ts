@@ -1,9 +1,9 @@
-import { LocationSearch } from './locationsearch';
+import { ForecastLocationSearch } from './forecastlocationsearch';
 
 export namespace RuntimeError {
     export class LocationError extends Error {
-        code: LocationSearch.Type;
-        constructor(msg: string, code: LocationSearch.Type) {
+        code: ForecastLocationSearch.Type;
+        constructor(msg: string, code: ForecastLocationSearch.Type) {
             super(msg);
             this.code = code;
     

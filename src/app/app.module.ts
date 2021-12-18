@@ -9,13 +9,13 @@ import { ForecastLocationComponent } from './forecast-location/forecast-location
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { LocationSearchComponent } from './location-search/location-search.component';
+import { ForecastForecastLocationSearchComponent } from './forecast-location-search/forecast-location-search.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ForecastLocationComponent,
-    LocationSearchComponent
+    ForecastForecastLocationSearchComponent
   ],
   imports: [
     BrowserModule,
