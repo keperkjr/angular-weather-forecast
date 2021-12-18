@@ -20,10 +20,10 @@ export class AppComponent implements OnInit {
 
     locationResults!: PositionStack.Result;
     selectedLocation!: PositionStack.Location;
+    currentLocation!: PositionStack.Location;
     currentWeather!: WeatherBit.Weather;
     futureWeather!: WeatherBit.Result;
 
-    searchQuery!: string;
     baseUrl: string;
     ipAddress = '';
     lastSearchData = {
@@ -37,11 +37,11 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        // this.getInitialLocation().then(() => {
-        //     console.log('Initial location loaded')
-        // }).catch((error) => {
-        //     console.log(error);
-        // });
+        this.getInitialLocation().then(() => {
+            console.log('Initial location loaded')
+        }).catch((error) => {
+            console.log(error);
+        });
 
         if (!this.locationApiAvailable) {
             // Call function prompting for gps
@@ -57,7 +57,8 @@ export class AppComponent implements OnInit {
         let info = this.locationResults.data[0];
         let longitude = info.longitude;
         let latitude = info.latitude;
-        
+        this.currentLocation = info;
+
         let forecast = await this.getForecast(latitude, longitude);
         this.currentWeather = forecast.currentWeather;
 
@@ -68,43 +69,53 @@ export class AppComponent implements OnInit {
         return firstValueFrom(this.http.get("http://api.ipify.org/?format=json"));
     }    
 
-    async onClickSearchTest() {
-        try {            
-            this.locationResults = await this.getLocation(LocationSearch.Type.SearchQuery, {
-                searchQuery: this.searchQuery
-            });
-
-            let info = this.locationResults.data[0];
-            let longitude = info.longitude;
-            let latitude = info.latitude;
-
-            let forecast = await this.getForecast(latitude, longitude);
-            this.currentWeather = forecast.currentWeather;
-
-            this.lastSearchData.searchQuery = this.searchQuery;             
-        } catch (error) {
-            this.displayError(error);
-        }             
+    compare(a: any, b: any) {
+        return a.continent == b.continent && a.country_code == b.country_code
+            && a.region_code == b.region_code;
     }
 
-    async onClickLocationTest() {
-        try {
-            let position = await Utils.getCurrentPosition();
-            let latitude = position.coords.latitude;
-            let longitude = position.coords.longitude;
-            
-            this.locationResults = await this.getLocation(LocationSearch.Type.GPS, {
-                latitude, longitude
-            });
+    async querySearch(searchQuery: string) {
+        this.locationResults = await this.getLocation(LocationSearch.Type.SearchQuery, {
+            searchQuery: searchQuery
+        });
 
-            let forecast = await this.getForecast(latitude, longitude);
-            this.currentWeather = forecast.currentWeather;
+        // Get the location that is the shortest distance from the user
+        if (this.currentLocation != null) {
+            this.locationResults.data.sort((a, b) => {
+                let distanceA = Utils.getDistance(this.currentLocation.latitude, this.currentLocation.longitude, a.latitude, a.longitude);
+                let distanceB = Utils.getDistance(this.currentLocation.latitude, this.currentLocation.longitude, b.latitude, b.longitude);                
+                return distanceA - distanceB;
+            })
+        }
 
-            this.lastSearchData.longitude = longitude;
-            this.lastSearchData.latitude = latitude;              
-        } catch (error) {
-            this.displayError(error);
-        }    
+        // this.locationResults.data.sort((a, b) => {
+        //     if (!this.compare(this.currentLocation, a)) {
+        //         return 1;
+        //     } else if (!this.compare(this.currentLocation, b)) {
+        //         return -1;
+        //     }
+        //     return 0;
+        // })
+
+        let info = this.locationResults.data[0];
+        let longitude = info.longitude;
+        let latitude = info.latitude;
+
+        let forecast = await this.getForecast(latitude, longitude);
+        this.currentWeather = forecast.currentWeather;            
+    }
+
+    async gpsSearch() {
+        let position = await Utils.getCurrentPosition();
+        let latitude = position.coords.latitude;
+        let longitude = position.coords.longitude;
+        
+        this.locationResults = await this.getLocation(LocationSearch.Type.GPS, {
+            latitude, longitude
+        });
+
+        let forecast = await this.getForecast(latitude, longitude);
+        this.currentWeather = forecast.currentWeather;  
     }
     
     async getForecast(latitude: number, longitude: number) {
@@ -180,9 +191,32 @@ export class AppComponent implements OnInit {
         }
     }
 
-    onSearchLocation(eventData: any) {
+    async onSearchLocation(eventData: any) {
         console.log(eventData);
+        let type = eventData.type;
+        
+        try {
+            switch(type) {
+                case LocationSearch.Type.SearchQuery:
+                    this.querySearch(eventData.searchQuery);
+                    break;
+                case LocationSearch.Type.GPS:
+                    await this.gpsSearch();                
+                    break;
+                default:
+                    throw new Error(`Unknown search type: ${type}`);
+                    break;
+            }
 
-        this.searchQuery = eventData.searchQuery;
+            let info = this.locationResults.data[0];
+            let longitude = info.longitude;
+            let latitude = info.latitude;
+
+            this.lastSearchData.longitude = longitude;
+            this.lastSearchData.latitude = latitude;
+            this.lastSearchData.searchQuery = eventData.searchQuery;
+        } catch (error) {
+            this.displayError(error);
+        }
     }    
 }
