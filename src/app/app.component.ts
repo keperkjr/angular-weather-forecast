@@ -69,11 +69,6 @@ export class AppComponent implements OnInit {
         return firstValueFrom(this.http.get("http://api.ipify.org/?format=json"));
     }    
 
-    compare(a: any, b: any) {
-        return a.continent == b.continent && a.country_code == b.country_code
-            && a.region_code == b.region_code;
-    }
-
     async querySearch(searchQuery: string) {
         this.locationResults = await this.getLocation(LocationSearch.Type.SearchQuery, {
             searchQuery: searchQuery
@@ -87,15 +82,6 @@ export class AppComponent implements OnInit {
                 return distanceA - distanceB;
             })
         }
-
-        // this.locationResults.data.sort((a, b) => {
-        //     if (!this.compare(this.currentLocation, a)) {
-        //         return 1;
-        //     } else if (!this.compare(this.currentLocation, b)) {
-        //         return -1;
-        //     }
-        //     return 0;
-        // })
 
         let info = this.locationResults.data[0];
         let longitude = info.longitude;
