@@ -1,5 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { LocationSearch } from '../models/locationsearch';
+import { Utils } from '../utils';
+
+interface EventData {
+    searchQuery: string;
+    latitude: number;
+    longitude: number;
+    type: LocationSearch.Type;
+}
 
 @Component({
   selector: 'app-location-search',
@@ -11,28 +19,60 @@ export class LocationSearchComponent implements OnInit {
 
     @Output('searchLocation')
     searchLocationEmitter = new EventEmitter();
-
-    eventData = {
-        searchQuery: '',
-        type: -1,
-    }
-        
+ 
     constructor() { }
 
     ngOnInit(): void {
+    }
+
+    newEventData() {
+        let eventData: EventData = {
+            searchQuery: '',
+            latitude: -1,
+            longitude: -1,
+            type: -1,
+        };
+        return eventData;
     }
 
     onSearchQueryLocation() {
         if (!this.searchQuery || this.searchQuery.trim().length == 0) {
             return;
         }
-        this.eventData.searchQuery = this.searchQuery;
-        this.eventData.type = LocationSearch.Type.SearchQuery;
-        this.searchLocationEmitter.emit(this.eventData);
+        let eventData = this.newEventData();
+        eventData.searchQuery = this.searchQuery,
+        eventData.type = LocationSearch.Type.SearchQuery,
+
+        this.searchLocationEmitter.emit(eventData);
     }
-    onSearcGPSLocation() {
-        this.eventData.searchQuery = '';
-        this.eventData.type = LocationSearch.Type.GPS;
-        this.searchLocationEmitter.emit(this.eventData);
+
+    async onSearcGPSLocation() {
+        try {
+            let locationCacheMinutes = 5;
+            let position = await Utils.getCurrentPosition({maximumAge: 60 * locationCacheMinutes * 1000});
+            let eventData = this.newEventData();
+
+            eventData.latitude = position.coords.latitude,
+            eventData.longitude = position.coords.longitude,
+            eventData.type = LocationSearch.Type.GPS,
+
+            this.searchLocationEmitter.emit(eventData);
+        } catch (error) {
+            console.log(error);
+            if (error instanceof GeolocationPositionError) {
+                switch(error.code) {
+                    case GeolocationPositionError.PERMISSION_DENIED:
+                        alert(`Location access is denied. Please allow access and try again!`);
+                        break;
+                    case GeolocationPositionError.POSITION_UNAVAILABLE:
+                        alert(`Location position is unavailable. Please allow access and try again!`);              
+                        break;
+                    default:
+                        alert(`Location could not be detected. Please try again!`);
+                }
+            } else {
+                alert(`An error occurred. Please try again!`);
+            }
+        }
     }    
 }
