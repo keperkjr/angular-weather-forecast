@@ -20,7 +20,7 @@ export class AppComponent implements OnInit {
 
     debug = true;
 
-    isLoading = true;
+    isLoading = false;
     location!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
     currentWeather!: WeatherBit.Weather;

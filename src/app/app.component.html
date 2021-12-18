@@ -17,16 +17,21 @@
     </div>
 </div>
 
-<ng-template #loading> 
-    <div class="spinner-container">
-        <mat-spinner></mat-spinner>
-    </div>
-</ng-template>
-<div class="content" role="main" *ngIf="!isLoading; else loading">
-    <div *ngIf="location">
-        <app-forecast-location
-            [location]="location"
-        >
-        </app-forecast-location>
-    </div>
+<div class="content" role="main">
+    <ng-container
+        *ngTemplateOutlet="isLoading ? loading: notLoading">
+    </ng-container>    
+    <ng-template #loading> 
+        <div class="spinner-container">
+            <mat-spinner></mat-spinner>
+        </div>
+    </ng-template>  
+    <ng-template #notLoading>
+        <div>
+            <app-forecast-location *ngIf="location"
+                [location]="location"
+            >
+            </app-forecast-location>
+        </div>
+    </ng-template>  
 </div>

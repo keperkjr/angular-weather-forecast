@@ -19,7 +19,7 @@ box-sizing: border-box;
     margin-bottom: 0.2em;
 }
 .spinner-container {
-    height: 100vh; 
+    height: 82vh; 
     display: flex; 
     align-items: center; 
     justify-content: center;
@@ -39,9 +39,9 @@ box-sizing: border-box;
 }
 
 @media screen and (max-width: 767px) {
-.title {
-    max-width: 220px;
-}
+    .title {
+        max-width: 220px;
+    }
 }  
 h1,
 h2,
