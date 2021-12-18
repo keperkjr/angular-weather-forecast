@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { PositionStack } from '../models/positionstack';
 
 @Component({
   selector: 'app-forecast-location',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForecastLocationComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    location!: PositionStack.Location;
+    
+    constructor() { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }

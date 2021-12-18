@@ -4,19 +4,22 @@
     >
         <mat-icon>gps_fixed</mat-icon>
     </button>
-    <mat-form-field appearance="fill" class="input-location-search">
-        <mat-label>Weather Location</mat-label>
-        <input matInput type="text" [(ngModel)]="searchQuery" name="search" 
-            placeholder="Ex. city, state, zip code, region, etc."
-            (keyup.enter)="onSearchQueryLocation()"
+    
+    <span *ngIf="showQuerySearch">
+        <mat-form-field appearance="fill" class="input-location-search">
+            <mat-label>Weather Location</mat-label>
+            <input matInput type="text" [(ngModel)]="searchQuery" name="search" 
+                placeholder="Ex. city, state, zip code, region, etc."
+                (keyup.enter)="onSearchQueryLocation()"
+            >
+            <button *ngIf="searchQuery" matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery=''">
+                <mat-icon>close</mat-icon>
+            </button>
+        </mat-form-field>
+        <button mat-flat-button color="primary" class="btn-location-search"
+            (click)="onSearchQueryLocation()"
         >
-        <button *ngIf="searchQuery" matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery=''">
-            <mat-icon>close</mat-icon>
+            <mat-icon>search</mat-icon>
         </button>
-    </mat-form-field>
-    <button mat-flat-button color="primary" class="btn-location-search"
-        (click)="onSearchQueryLocation()"
-    >
-        <mat-icon>search</mat-icon>
-    </button>
+    </span>
 </div>

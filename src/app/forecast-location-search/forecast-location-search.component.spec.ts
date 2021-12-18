@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ForecastForecastLocationSearchComponent } from './forecast-location-search.component';
+import { ForecastLocationSearchComponent } from './forecast-location-search.component';
 
-describe('ForecastForecastLocationSearchComponent', () => {
-  let component: ForecastForecastLocationSearchComponent;
-  let fixture: ComponentFixture<ForecastForecastLocationSearchComponent>;
+describe('ForecastLocationSearchComponent', () => {
+  let component: ForecastLocationSearchComponent;
+  let fixture: ComponentFixture<ForecastLocationSearchComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ForecastForecastLocationSearchComponent ]
+      declarations: [ ForecastLocationSearchComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ForecastForecastLocationSearchComponent);
+    fixture = TestBed.createComponent(ForecastLocationSearchComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

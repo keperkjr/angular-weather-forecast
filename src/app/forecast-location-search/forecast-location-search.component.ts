@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { Utils } from '../utils';
 
@@ -14,9 +14,12 @@ interface EventData {
   templateUrl: './forecast-location-search.component.html',
   styleUrls: ['./forecast-location-search.component.css']
 })
-export class ForecastForecastLocationSearchComponent implements OnInit {
+export class ForecastLocationSearchComponent implements OnInit {
     searchQuery!: string;
 
+    @Input()
+    showQuerySearch!: boolean;
+    
     @Output('searchLocation')
     searchLocationEmitter = new EventEmitter();
  

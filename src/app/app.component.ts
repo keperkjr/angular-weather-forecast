@@ -16,9 +16,12 @@ import { RuntimeError } from './models/errors';
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = false;
-    weatherApiAvailable = true;
+    weatherApiAvailable = false;
 
-    selectedLocation!: PositionStack.Location;
+    debug = true;
+
+    isLoading = true;
+    location!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
     currentWeather!: WeatherBit.Weather;
     futureWeather!: WeatherBit.Result;
@@ -36,11 +39,16 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        // this.getInitialLocation().then(() => {
-        //     console.log('Initial location loaded')
-        // }).catch((error) => {
-        //     console.log(error);
-        // });
+        if (!this.debug) {
+            this.getInitialLocation().then(() => {
+                console.log('Initial location loaded')
+            }).catch((error) => {
+                console.log(error);
+            });
+        } else {
+            this.locationApiAvailable = true;
+            this.weatherApiAvailable = true;
+        }
 
         if (!this.locationApiAvailable) {
             // Call function prompting for gps
@@ -53,10 +61,10 @@ export class AppComponent implements OnInit {
         let locationResults = await this.getLocation(ForecastLocationSearch.Type.IP, {ipAddress: this.ipAddress});
         this.locationApiAvailable = true;
 
-        let info = locationResults.data[0];
-        let longitude = info.longitude;
-        let latitude = info.latitude;
-        this.currentLocation = info;
+        this.currentLocation = locationResults.data[0];
+        this.location = this.currentLocation;
+        let longitude = this.location.longitude;
+        let latitude = this.location.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
         this.currentWeather = forecast.currentWeather;
@@ -79,21 +87,23 @@ export class AppComponent implements OnInit {
             }
         }
         return nearestLocation;
-    }    
-
+    }  
+      
     async querySearch(searchQuery: string) {
-        if (this.lastSearchData.searchQuery != searchQuery) {
+        if (this.location == null || this.lastSearchData.searchQuery != searchQuery) {
             let locationResults = await this.getLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
+            this.location = locationResults.data[0];
+
             // Get the location that is the shortest distance from the user
             if (this.currentLocation != null) {
-                this.selectedLocation = this.getNearestLocation(this.currentLocation.latitude, this.currentLocation.longitude, locationResults);
+                this.location = this.getNearestLocation(this.currentLocation.latitude, this.currentLocation.longitude, locationResults);
             }
         }
 
-        let longitude = this.selectedLocation.longitude;
-        let latitude = this.selectedLocation.latitude;
+        let longitude = this.location.longitude;
+        let latitude = this.location.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
         this.currentWeather = forecast.currentWeather;  
@@ -104,13 +114,13 @@ export class AppComponent implements OnInit {
     }
 
     async gpsSearch(latitude: number, longitude: number) {        
-        if (this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude) {
+        if (this.location == null || this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude) {
             this.lastSearchData.searchQuery = '';
 
             let locationResults = await this.getLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
             });
-            this.selectedLocation = locationResults.data[0];
+            this.location = locationResults.data[0];
         }
 
         let forecast = await this.getForecast(latitude, longitude);
@@ -181,8 +191,8 @@ export class AppComponent implements OnInit {
 
     async onSearchLocation(eventData: any) {
         console.log(eventData);
+        this.isLoading = true;
         let type = eventData.type;
-
         try {
             switch(type) {
                 case ForecastLocationSearch.Type.SearchQuery:
@@ -195,11 +205,13 @@ export class AppComponent implements OnInit {
                     throw new Error(`Unknown search type: ${type}`);
                     break;
             }
-            if (this.selectedLocation != null) {
-                console.log('Selected Location:', this.selectedLocation);
+            if (this.location != null) {
+                console.log('Selected Location:', this.location);
             }
         } catch (error) {
             this.displayError(error);
+        } finally {
+            this.isLoading = false;
         }
     }    
 }
