@@ -6,16 +6,11 @@
     </button>
     
     <span *ngIf="showQuerySearch">
-        <mat-form-field appearance="fill" class="input-location-search">
-            <mat-label>Weather Location</mat-label>
-            <input matInput type="text" [(ngModel)]="searchQuery" name="search" 
-                placeholder="Ex. city, state, zip code, region, etc."
-                (keyup.enter)="onSearchQueryLocation()"
-            >
-            <button *ngIf="searchQuery" matSuffix mat-icon-button aria-label="Clear" (click)="searchQuery=''">
-                <mat-icon>close</mat-icon>
-            </button>
-        </mat-form-field>
+        <input type="text" [(ngModel)]="searchQuery" name="search" 
+            placeholder="Search by city, state, zip code, region, etc."
+            (keyup.enter)="onSearchQueryLocation()"
+            class="input-location-search"
+        >        
         <button mat-flat-button color="primary" class="btn-location-search"
             (click)="onSearchQueryLocation()"
         >
