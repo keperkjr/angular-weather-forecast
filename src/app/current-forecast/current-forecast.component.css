@@ -1,5 +1,7 @@
 .forecast-container {
     margin-left: 30px;
+    width: 50%;
+    display: inline-block;
 }
 .temp-container {
     display: inline-block;   
@@ -25,4 +27,23 @@
     font-weight: bold;
     margin-top: 18px;
     font-size: 15px;
+}
+.forecast-details-container {
+    width: 45%;
+    display: inline-block;
+    vertical-align: top;
+}
+.details-row {
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 8px 0;  
+    justify-content: space-between; 
+    font-size: 16px;
+    line-height: 1.33;
+    font-weight: bold; 
+}
+.details-value {
+    opacity: 0.5;
 }
