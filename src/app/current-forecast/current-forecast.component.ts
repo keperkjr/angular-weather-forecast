@@ -24,11 +24,38 @@ export class CurrentForecastComponent implements OnInit {
     getTimeOfDay() {
         return this.forecast.pod == 'd' ? 'Day' : 'Night';
     }
+
     getOutsideDescription() {
         return this.forecast.weather.description;
     }
+
     getLocalTime() {
-        var date = Utils.convertTZ(new Date(), this.forecast.timezone);
-        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        return this.toLocalTime(new Date());
     }
+
+    getLocalSunrise() {
+        let split = this.forecast.sunrise.split(':');
+        let date = new Date();
+        date.setHours(Number(split[0]));
+        date.setMinutes(Number(split[1]));
+        return this.toLocalTime(Utils.treatAsUTC(date));
+    }
+
+    getLocalSunset() {
+        let split = this.forecast.sunset.split(':');
+        let date = new Date();
+        date.setHours(Number(split[0]));
+        date.setMinutes(Number(split[1]));        
+        return this.toLocalTime(Utils.treatAsUTC(date));
+    }
+
+    getLastUpdated() {
+        let date = new Date(this.forecast.ob_time);
+        return this.toLocalTime(Utils.treatAsUTC(date));
+    }
+
+    toLocalTime(date: Date) {
+        var date = Utils.convertTZ(date, this.forecast.timezone);
+        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    }       
 }

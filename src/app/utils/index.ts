@@ -35,5 +35,11 @@ export namespace Utils {
 
     export function convertTZ(date: Date, tzString: string) {
         return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
-    }      
+    } 
+    
+    export function treatAsUTC (date: Date) {
+        let result = new Date(date);
+        result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
+        return result;
+    }         
 }

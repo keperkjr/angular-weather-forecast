@@ -18,13 +18,13 @@
         </div>
         <div class="outside">
             {{ getTimeOfDay() }} - {{ getOutsideDescription() }}
-        </div>          
+        </div>       
     </section> 
-    <section class="forecast-details-container">
-        <div class="details-row">
-            <span> Latitude /  Longitude</span>
-            <span class="details-value">{{ forecast.lat }} / {{ forecast.lon }}</span>
-        </div>        
+    <section class="forecast-details-container"> 
+        <div class="details-row" *ngIf="forecast.sunrise && forecast.sunset">
+            <span> Sunrise /  Sunset</span>
+            <span class="details-value">{{ getLocalSunrise() }} / {{ getLocalSunset() }}</span>
+        </div>              
         <div class="details-row">
             <span>Humidity</span>
             <span class="details-value">{{ forecast.rh }}%</span>
@@ -40,7 +40,15 @@
         <div class="details-row">
             <span>Dew Point</span>
             <span class="details-value">{{ forecast.dewpt }}°</span>
-        </div>                               
+        </div>  
+        <div class="details-row">
+            <span> Latitude /  Longitude</span>
+            <span class="details-value">{{ forecast.lat }} / {{ forecast.lon }}</span>
+        </div>  
+        <div class="details-row" *ngIf="forecast.ob_time">
+            <span>As of</span>
+            <span class="details-value">{{ getLastUpdated() }}</span>
+        </div>                                           
     </section> 
 </div>
 
