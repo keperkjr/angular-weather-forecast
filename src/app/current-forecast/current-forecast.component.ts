@@ -11,10 +11,13 @@ export class CurrentForecastComponent implements OnInit {
 
     @Input()
     forecast!: WeatherBit.Weather;
+
+    localDate!: string;
     
     constructor() { }
 
     ngOnInit(): void {
+        this.localDate = this.getLocalDateString();
     }
 
     getForcastImgSrc() {
@@ -29,8 +32,9 @@ export class CurrentForecastComponent implements OnInit {
         return this.forecast.weather.description;
     }
 
-    getLocalTime() {
-        return this.toLocalTime(new Date());
+    getLocalDateString() {
+        let date = this.toLocalDatetime(new Date());
+        return `${Utils.getWeekdayName(date)} ${Utils.getDateTimeString(date)}`;
     }
 
     getLocalSunrise() {
@@ -38,7 +42,7 @@ export class CurrentForecastComponent implements OnInit {
         let date = new Date();
         date.setHours(Number(split[0]));
         date.setMinutes(Number(split[1]));
-        return this.toLocalTime(Utils.treatAsUTC(date));
+        return Utils.getTimeString(this.toLocalDatetime(Utils.treatAsUTC(date)));
     }
 
     getLocalSunset() {
@@ -46,16 +50,15 @@ export class CurrentForecastComponent implements OnInit {
         let date = new Date();
         date.setHours(Number(split[0]));
         date.setMinutes(Number(split[1]));        
-        return this.toLocalTime(Utils.treatAsUTC(date));
+        return Utils.getTimeString(this.toLocalDatetime(Utils.treatAsUTC(date)));
     }
 
     getLastUpdated() {
         let date = new Date(this.forecast.ob_time);
-        return this.toLocalTime(Utils.treatAsUTC(date));
+        return Utils.getTimeString(Utils.treatAsUTC(date));
     }
 
-    toLocalTime(date: Date) {
-        var date = Utils.convertTZ(date, this.forecast.timezone);
-        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
-    }       
+    toLocalDatetime(date: Date) {
+        return Utils.convertTimezone(date, this.forecast.timezone);
+    }
 }
