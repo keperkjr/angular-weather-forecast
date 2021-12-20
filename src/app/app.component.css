@@ -58,6 +58,9 @@ box-sizing: border-box;
     .title {
         max-width: 220px;
     }
+    .current-forecast-container {
+        text-align: center;
+    }    
 }
 
 /* ------------------ */

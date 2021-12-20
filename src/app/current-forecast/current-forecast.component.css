@@ -1,5 +1,4 @@
 .forecast-container {
-    margin-left: 30px;
     width: 50%;
     display: inline-block;
 }
@@ -28,8 +27,12 @@
     margin-top: 18px;
     font-size: 15px;
 }
+.outside.time {
+    opacity: 0.5;
+    margin-top: unset;
+}
 .forecast-details-container {
-    width: 45%;
+    width: 50%;
     display: inline-block;
     vertical-align: top;
 }
@@ -46,4 +49,20 @@
 }
 .details-value {
     opacity: 0.5;
+}
+
+@media screen and (max-width: 767px) {
+    .forecast-container {
+        margin-left: unset;
+        width: unset;
+        display: initial;
+    }    
+    .forecast-details-container {
+        display: initial;
+        width: unset;
+        vertical-align: unset;
+    }
+    .current-weather {
+        margin-top: 15px;
+    }    
 }

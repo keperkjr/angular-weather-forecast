@@ -1,6 +1,11 @@
 <div>
-    <h2>Current Weather</h2>   
-    <section class="forecast-container">        
+    <div class="current-weather">
+        <h2>Current Weather</h2>
+    </div>
+    <section class="forecast-container">
+        <div class="outside time">
+            {{ getLocalTime() }}
+        </div>
         <img class="weather-icon" [src]="getForcastImgSrc()" alt="Forcast" />
         <div class="temp-container">
             <div class="temp">

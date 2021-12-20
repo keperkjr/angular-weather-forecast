@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WeatherBit } from '../models/weatherbit';
+import { Utils } from '../utils'
 
 @Component({
   selector: 'app-current-forecast',
@@ -25,5 +26,9 @@ export class CurrentForecastComponent implements OnInit {
     }
     getOutsideDescription() {
         return this.forecast.weather.description;
+    }
+    getLocalTime() {
+        var date = Utils.convertTZ(new Date(), this.forecast.timezone);
+        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
     }
 }

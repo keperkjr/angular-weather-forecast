@@ -31,5 +31,9 @@ export namespace Utils {
       
     function deg2rad(deg: number) {
         return deg * (Math.PI/180)
-    }    
+    }  
+
+    export function convertTZ(date: Date, tzString: string) {
+        return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: tzString}));   
+    }      
 }
