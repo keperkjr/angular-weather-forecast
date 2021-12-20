@@ -1,1 +1,16 @@
-<p>current-forecast works!</p>
+<div>
+    <h2>Current Weather</h2>
+    <div class="forecast-container">
+        <img class="weather-icon" [src]="getForcastImgSrc()" alt="Forcast" />
+        <div class="temp-container">
+            <div class="temp">
+                {{ forecast.temp }}°
+                <span class="after-temp">F</span>
+            </div>
+            <div class="real-feel">
+                Feels Like {{ forecast.app_temp }}°
+            </div>
+        </div>
+    </div>
+</div>
+

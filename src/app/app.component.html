@@ -34,6 +34,9 @@
                 [location]="location"
             >
             </app-forecast-location>
+            <app-current-forecast *ngIf="currentForecast"
+                [forecast]="currentForecast"
+            ></app-current-forecast>
         </div>
     </ng-template>  
 </div>

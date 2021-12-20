@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { WeatherBit } from '../models/weatherbit';
 
 @Component({
   selector: 'app-current-forecast',
@@ -7,9 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CurrentForecastComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    forecast!: WeatherBit.Weather;
+    
+    constructor() { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
+    getForcastImgSrc() {
+        return `https://www.weatherbit.io/static/img/icons/${this.forecast.weather.icon}.png`
+    }
 }

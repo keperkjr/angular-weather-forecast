@@ -1,11 +1,10 @@
 .location {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    text-align: center;
-    margin-top: 20px;
+    text-align: right;
 }
 .city {
-    font-size: 40px;
+    font-size: 35px;
     margin-bottom: 20px;
 }
 .region {

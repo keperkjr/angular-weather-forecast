@@ -23,8 +23,8 @@ export class AppComponent implements OnInit {
     isLoading = false;
     location!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
-    currentWeather!: WeatherBit.Weather;
-    futureWeather!: WeatherBit.Result;
+    currentForecast!: WeatherBit.Weather;
+    futureForecast!: WeatherBit.Result;
 
     baseUrl: string;
     ipAddress = '';
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
         let latitude = this.location.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentWeather = forecast.currentWeather;
+        this.currentForecast = forecast.currentForecast;
 
         this.weatherApiAvailable = true;
     }
@@ -106,7 +106,7 @@ export class AppComponent implements OnInit {
         let latitude = this.location.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentWeather = forecast.currentWeather;  
+        this.currentForecast = forecast.currentForecast;  
         
         this.lastSearchData.longitude = longitude;
         this.lastSearchData.latitude = latitude;
@@ -124,7 +124,7 @@ export class AppComponent implements OnInit {
         }
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentWeather = forecast.currentWeather;  
+        this.currentForecast = forecast.currentForecast;  
 
         this.lastSearchData.longitude = longitude;
         this.lastSearchData.latitude = latitude;        
@@ -138,7 +138,7 @@ export class AppComponent implements OnInit {
             throw new RuntimeError.ForecastError(`No weather results returned for latitude: ${latitude}, longitude: ${longitude}`);
         }
         return {
-            currentWeather: currentWeatherResults.data[0],
+            currentForecast: currentWeatherResults.data[0],
         };
     } 
 
@@ -163,7 +163,9 @@ export class AppComponent implements OnInit {
         console.log(geocode);
         if (geocode.error != null) {
             throw new RuntimeError.LocationError(geocode.error.message, type);
-        } 
+        }  else if (!geocode.data || geocode.data.length == 0) {
+            throw new RuntimeError.LocationError('No results returned', type);
+        }
         return geocode;
     }
 
