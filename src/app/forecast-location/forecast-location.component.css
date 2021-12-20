@@ -1,0 +1,13 @@
+.location {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+}
+.city {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+.region {
+    font-style: italic;
+}

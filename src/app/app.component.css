@@ -38,11 +38,23 @@ box-sizing: border-box;
     width: 100%;
 }
 
+.current-forecast-container {
+    width: 95%;
+    height: 300px;
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #a6a6a6;
+    margin-top: 8px;
+}
+
 @media screen and (max-width: 767px) {
     .title {
         max-width: 220px;
     }
-}  
+}
+
+/* ------------------ */
+
 h1,
 h2,
 h3,
@@ -96,7 +108,7 @@ flex: 1;
     display: flex;
     margin: 82px auto 32px;
     padding: 0 16px;
-    max-width: 960px;
+    /* max-width: 960px; */
     flex-direction: column;
     align-items: center;
 }

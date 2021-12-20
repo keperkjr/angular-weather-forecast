@@ -4,15 +4,14 @@
 }
 .input-location-search {
     width: 70%;
-    height: 21px;
+    height: 20px;
     border: 0;
     background-color: #eee;
     padding: 8px;
 }
 
 .btn-location-search, .btn-gps {
-    vertical-align: top; 
-    padding: 1px;   
+    vertical-align: top;
     background-color: darkblue;
 }
 .btn-location-search {

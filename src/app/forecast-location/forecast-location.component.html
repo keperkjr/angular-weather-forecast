@@ -1,3 +1,11 @@
-<div>
-    {{ location.locality }}
+<div class="location">
+    <span class="city"> 
+        {{ location.locality }}
+        <span *ngIf="location.postal_code">
+            , {{ location.postal_code }}
+        </span>
+    </span>
+    <span class="region">
+         {{ location.region }}, {{ location.country}}
+    </span>
 </div>
