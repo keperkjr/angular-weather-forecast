@@ -19,4 +19,11 @@ export class CurrentForecastComponent implements OnInit {
     getForcastImgSrc() {
         return `https://www.weatherbit.io/static/img/icons/${this.forecast.weather.icon}.png`
     }
+
+    getTimeOfDay() {
+        return this.forecast.pod == 'd' ? 'Day' : 'Night';
+    }
+    getOutsideDescription() {
+        return this.forecast.weather.description;
+    }
 }

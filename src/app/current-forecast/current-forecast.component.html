@@ -1,6 +1,6 @@
 <div>
-    <h2>Current Weather</h2>
-    <div class="forecast-container">
+    <h2>Current Weather</h2>   
+    <div class="forecast-container">        
         <img class="weather-icon" [src]="getForcastImgSrc()" alt="Forcast" />
         <div class="temp-container">
             <div class="temp">
@@ -11,6 +11,9 @@
                 Feels Like {{ forecast.app_temp }}°
             </div>
         </div>
-    </div>
+        <div class="outside">
+            {{ getTimeOfDay() }} - {{ getOutsideDescription() }}
+        </div>          
+    </div>  
 </div>
 

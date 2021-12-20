@@ -58,7 +58,7 @@ export class AppComponent implements OnInit {
     async getInitialLocation() {
         let ipData = await this.getIPAddress();
         this.ipAddress = ipData.ip;
-        let locationResults = await this.getLocation(ForecastLocationSearch.Type.IP, {ipAddress: this.ipAddress});
+        let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {ipAddress: this.ipAddress});
         this.locationApiAvailable = true;
 
         this.currentLocation = locationResults.data[0];
@@ -91,7 +91,7 @@ export class AppComponent implements OnInit {
       
     async querySearch(searchQuery: string) {
         if (this.location == null || this.lastSearchData.searchQuery != searchQuery) {
-            let locationResults = await this.getLocation(ForecastLocationSearch.Type.SearchQuery, {
+            let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
             this.location = locationResults.data[0];
@@ -117,7 +117,7 @@ export class AppComponent implements OnInit {
         if (this.location == null || this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude) {
             this.lastSearchData.searchQuery = '';
 
-            let locationResults = await this.getLocation(ForecastLocationSearch.Type.GPS, {
+            let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
             });
             this.location = locationResults.data[0];
@@ -143,7 +143,7 @@ export class AppComponent implements OnInit {
     } 
 
     // TODO: Only do this if location api is available
-    async getLocation(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
+    async getForecastLocation(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
         let observable!: Observable<PositionStack.Result>;
         switch(type) {
             case ForecastLocationSearch.Type.IP:
@@ -162,16 +162,16 @@ export class AppComponent implements OnInit {
         let geocode = await firstValueFrom(observable);
         console.log(geocode);
         if (geocode.error != null) {
-            throw new RuntimeError.LocationError(geocode.error.message, type);
+            throw new RuntimeError.ForecastLocationError(geocode.error.message, type);
         }  else if (!geocode.data || geocode.data.length == 0) {
-            throw new RuntimeError.LocationError('No results returned', type);
+            throw new RuntimeError.ForecastLocationError('No results returned', type);
         }
         return geocode;
     }
 
     displayError(error: any) {
         console.log(error);
-        if (error instanceof RuntimeError.LocationError) {
+        if (error instanceof RuntimeError.ForecastLocationError) {
             switch(error.code) {
                 case ForecastLocationSearch.Type.IP:                    
                     break;

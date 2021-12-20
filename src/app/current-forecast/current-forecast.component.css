@@ -1,3 +1,6 @@
+.forecast-container {
+    margin-left: 30px;
+}
 .temp-container {
     display: inline-block;   
 }
@@ -17,4 +20,9 @@
     line-height: 1.28;
     margin-left: -24px;
     opacity: .6;    
+}
+.outside {
+    font-weight: bold;
+    margin-top: 18px;
+    font-size: 15px;
 }
