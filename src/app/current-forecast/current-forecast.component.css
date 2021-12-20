@@ -41,14 +41,38 @@
     align-items: center;
     display: flex;
     flex-wrap: wrap;
-    padding: 8px 0;  
+    padding: 4px 0;  
     justify-content: space-between; 
-    font-size: 16px;
+    font-size: 14.5px;
     line-height: 1.33;
     font-weight: bold; 
 }
 .details-value {
     opacity: 0.5;
+}
+
+.air-quality {
+    opacity: initial;
+    font-weight: bolder;
+}
+
+.air-quality.excellent {
+    color: #00e59b;
+}
+.air-quality.fair {
+    color: #ffc302;
+}
+.air-quality.poor {
+    color: #ff712b;
+}
+.air-quality.unhealthy {
+    color: #f62a55;
+}
+.air-quality.very-unhealthy {
+    color: #c72eaa;
+}
+.air-quality.very-dangerous {
+    color: #9930ff;
 }
 
 @media screen and (max-width: 767px) {

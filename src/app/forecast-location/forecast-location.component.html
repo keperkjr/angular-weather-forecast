@@ -1,6 +1,6 @@
 <div class="location">
     <span class="city"> 
-        {{ location.locality }}
+        {{ getCity() }}
         <span *ngIf="location.postal_code">
             {{ location.postal_code }},
         </span>

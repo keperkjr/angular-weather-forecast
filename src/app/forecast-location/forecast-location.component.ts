@@ -16,4 +16,7 @@ export class ForecastLocationComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    getCity() {
+        return this.location.locality ? this.location.locality: this.location.county;
+    }
 }

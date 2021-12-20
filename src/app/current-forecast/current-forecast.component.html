@@ -24,7 +24,11 @@
         <div class="details-row" *ngIf="forecast.sunrise && forecast.sunset">
             <span> Sunrise /  Sunset</span>
             <span class="details-value">{{ getLocalSunrise() }} / {{ getLocalSunset() }}</span>
-        </div>              
+        </div>  
+        <div class="details-row">
+            <span>Air Quality</span>
+            <span class="details-value" [ngClass]="getAirQualityCss()">{{ getAirQuality() }}</span>
+        </div>                    
         <div class="details-row">
             <span>Humidity</span>
             <span class="details-value">{{ forecast.rh }}%</span>

@@ -61,4 +61,28 @@ export class CurrentForecastComponent implements OnInit {
     toLocalDatetime(date: Date) {
         return Utils.convertTimezone(date, this.forecast.timezone);
     }
+
+    getAirQuality() {
+        let result = '';
+        if (this.forecast.aqi >= 301) {
+            result = 'Dangerous';
+        } else if (this.forecast.aqi >= 201) {
+            result = 'Very Unhealthy';
+        } else if (this.forecast.aqi >= 151) {
+            result = 'Unhealthy';
+        } else if (this.forecast.aqi >= 101) {
+            result = 'Poor';
+        } else if (this.forecast.aqi >= 51) {
+            result = 'Fair';
+        } else {
+            result = 'Excellent';
+        }
+        return result;
+    }
+
+    getAirQualityCss() {
+        let airQuality = this.getAirQuality();
+        let className = airQuality.replace(' ', '-').toLowerCase();
+        return `air-quality ${className}`;
+    }    
 }
