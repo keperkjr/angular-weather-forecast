@@ -12,13 +12,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrentForecastComponent } from './current-forecast/current-forecast.component';
+import { FutureForecastComponent } from './future-forecast/future-forecast.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ForecastLocationComponent,
     ForecastLocationSearchComponent,
-    CurrentForecastComponent
+    CurrentForecastComponent,
+    FutureForecastComponent
   ],
   imports: [
     BrowserModule,
