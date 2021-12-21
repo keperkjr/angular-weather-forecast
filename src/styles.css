@@ -11,3 +11,45 @@ body {
     background-size: cover;
     /* min-height:100vh; */
 }
+
+* {
+    box-sizing: border-box;
+}
+
+.details-row {
+    border-bottom: 1px solid #eee;
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    padding: 4px 0;  
+    justify-content: space-between; 
+    line-height: 1.33;
+    font-weight: bold; 
+}
+.details-value {
+    opacity: 0.5;
+}
+
+.air-quality, .uv-index {
+    opacity: initial;
+    font-weight: bolder;
+}
+
+.air-quality.excellent, .uv-index.low  {
+    color: #00e59b;
+}
+.air-quality.fair, .uv-index.moderate {
+    color: #ffc302;
+}
+.air-quality.poor, .uv-index.high {
+    color: #ff712b;
+}
+.air-quality.unhealthy, .uv-index.very-high {
+    color: #f62a55;
+}
+.air-quality.very-unhealthy {
+    color: #c72eaa;
+}
+.air-quality.very-dangerous, .uv-index.extreme {
+    color: #9930ff;
+}

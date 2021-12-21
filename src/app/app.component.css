@@ -38,7 +38,6 @@ box-sizing: border-box;
     border-radius: 8px;
     border: 1px solid #a6a6a6;
     margin-top: 8px;
-    box-sizing: border-box;
     padding: 30px;
 }
 .spinner-container {

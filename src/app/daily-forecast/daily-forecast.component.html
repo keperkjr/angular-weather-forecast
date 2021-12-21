@@ -12,14 +12,27 @@
         <div class="high-temp">
             {{ forecast.max_temp }}°
         </div>
+         / 
         <div class="low-temp">
             {{ forecast.low_temp }}°
         </div>
     </section>
-    <div>
-        <span title="Rain">☂️</span> {{ forecast.pop }}%
-    </div>
-    <div>
-        <span title="Wind">💨</span> {{ forecast.wind_cdir }} {{ forecast.wind_spd }} mph
-    </div>
+    <section class="daily-details-section">
+        <div>
+            <span title="Chance of rain">☂️ </span>
+            <span class="details-value">{{ forecast.pop }}%</span>
+        </div>
+        <!-- <div>
+            <span title="Humidity">😰 </span>
+            <span class="details-value">{{ forecast.rh }}%</span>
+        </div>  
+        <div>
+            <span title="UV Index">🕶 </span>
+            <span class="details-value" [ngClass]="getUVIndexCss()">{{ getUVIndexDescription() }}</span>
+        </div>          -->
+        <div>
+            <span title="Wind direction / speed">💨 </span>
+            <span class="details-value">{{ forecast.wind_cdir }} {{ forecast.wind_spd }} mph</span>
+        </div>                  
+    </section>           
 </div>

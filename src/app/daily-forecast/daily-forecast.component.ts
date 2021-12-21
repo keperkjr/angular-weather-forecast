@@ -30,5 +30,14 @@ export class DailyForecastComponent implements OnInit {
     getForcastImgSrc() {
         return WeatherBit.getForcastImgSrc(this.forecast.weather.icon);
     }
+    
+    getUVIndexDescription() {
+        return WeatherBit.getUVIndexDescription(this.forecast.uv);
+    }
 
+    getUVIndexCss() {
+        let desc = this.getUVIndexDescription();
+        let className = desc.replace(' ', '-').toLowerCase();
+        return `uv-index ${className}`;
+    }     
 }
