@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
 import { PositionStack } from './models/positionstack';
 import { WeatherBit } from './models/weatherbit';
@@ -32,6 +32,19 @@ export class AppComponent implements OnInit {
         latitude: 0
     };
 
+    @ViewChild('widgetsContent')
+    widgetsContent!: ElementRef;
+
+    scrollLeft(){
+        this.widgetsContent.nativeElement.scrollLeft -= 150;
+        // this.widgetsContent.nativeElement.scrollLeft -= this.widgetsContent.nativeElement.scrollWidth; 
+      }
+    
+      scrollRight(){
+        this.widgetsContent.nativeElement.scrollLeft += 150;
+        // this.widgetsContent.nativeElement.scrollLeft += this.widgetsContent.nativeElement.scrollWidth; 
+      }
+          
     constructor(private http: HttpClient, private positionStackApi: PositionStackApiService, private weatherBitApi: WeatherBitApiService) { 
         this.baseUrl = location.href;
     }

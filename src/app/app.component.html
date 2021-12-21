@@ -45,5 +45,47 @@
             >
             </app-daily-forecast>
         </section>
+
+        <div class="forecast-container">
+
+        
+        <div class="container">
+            <div class="side left">
+                <button mat-mini-fab color="primary"
+                    (click)="scrollLeft()"
+                >
+                    <mat-icon>keyboard_arrow_left</mat-icon>
+                </button>                
+            </div>
+            <div #widgetsContent class="middle">
+                <div class="info-widget">
+                WIDGET
+                </div>
+                <div class="info-widget">
+                WIDGET
+                </div>
+                <div class="info-widget">
+                WIDGET
+                </div>
+                <div class="info-widget">
+                WIDGET
+                </div>
+                <div class="info-widget">
+                WIDGET
+                </div>
+                <div class="info-widget">
+                WIDGET
+                </div>
+            </div>
+            <div class="side right">
+                <button mat-mini-fab color="primary"
+                    (click)="scrollRight()"
+                >
+                    <mat-icon>keyboard_arrow_right</mat-icon>
+                </button> 
+            </div>
+          </div>
+        </div>
+        
     </ng-template>  
 </main>
