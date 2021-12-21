@@ -46,6 +46,10 @@ export namespace Utils {
     export function getWeekdayName(date: Date, locale: string = 'en-US') {
         return date.toLocaleDateString(locale, { weekday: 'long' });        
     } 
+
+    export function getMonthName(date: Date, locale: string = 'en-US') {
+        return date.toLocaleDateString(locale, { month: 'long' });        
+    }     
     
     export function getDateString(date: Date, locale: string = 'en-US') {
         return date.toLocaleDateString(locale);
