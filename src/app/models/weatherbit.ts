@@ -1,11 +1,11 @@
 export namespace WeatherBit {   
     export namespace Current {      
         export interface Result {
-            data: Weather[]
+            data: Forecast[]
             count: number
         }
         
-        export interface Weather {
+        export interface Forecast {
             rh: number
             pod: string
             lon: number
@@ -44,19 +44,11 @@ export namespace WeatherBit {
             app_temp: number
         }
         
-        export interface Weather {
-            icon: string
-            code: number
-            description: string
-        }
-    }
-}
-
-
-export namespace WeatherBit {   
-    export namespace Future {  
+    } 
+    
+    export namespace Daily {
         export interface Result {
-            data: Weather[]
+            data: Forecast[]
             city_name: string
             lon: number
             timezone: string
@@ -64,8 +56,8 @@ export namespace WeatherBit {
             country_code: string
             state_code: string
         }
-          
-          export interface Weather {
+        
+        export interface Forecast {
             moonrise_ts: number
             wind_cdir: string
             rh: number
@@ -105,11 +97,11 @@ export namespace WeatherBit {
             clouds_mid: number
             clouds_low: number
         }
-          
-          export interface Weather {
-              icon: string
-              code: number
-              description: string
-        }
+    }
+
+    export interface Weather {
+        icon: string
+        code: number
+        description: string
     }
 }

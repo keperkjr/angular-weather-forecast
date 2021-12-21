@@ -23,8 +23,8 @@ export class AppComponent implements OnInit {
     isLoading = false;
     location!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
-    currentForecast!: WeatherBit.Current.Weather;
-    futureForecast!: WeatherBit.Future.Result;
+    currentForecast!: WeatherBit.Current.Forecast;
+    dailyForecast!: WeatherBit.Daily.Result;
 
     baseUrl: string;
     ipAddress = '';
@@ -132,13 +132,13 @@ export class AppComponent implements OnInit {
     
     async getForecast(latitude: number, longitude: number) {
         // Get forecase here
-        let currentWeatherResults = await firstValueFrom(this.weatherBitApi.getCurrentWeather(latitude, longitude));
-        console.log(currentWeatherResults);
-        if (currentWeatherResults.count == 0 || currentWeatherResults.data.length == 0) {
+        let currentForecastResults = await firstValueFrom(this.weatherBitApi.getCurrentForecast(latitude, longitude));
+        console.log(currentForecastResults);
+        if (currentForecastResults.count == 0 || currentForecastResults.data.length == 0) {
             throw new RuntimeError.ForecastError(`No weather results returned for latitude: ${latitude}, longitude: ${longitude}`);
         }
         return {
-            currentForecast: currentWeatherResults.data[0],
+            currentForecast: currentForecastResults.data[0],
         };
     } 
 

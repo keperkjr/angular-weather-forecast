@@ -17,11 +17,16 @@ export class WeatherBitApiService extends ApiService {
     baseUrl = 'https://api.weatherbit.io/v2.0';
     key = 'cb5f7550ce814ad6b74f515651f72b79';
 
-    getCurrentWeather(latitude: number, longitude: number) {
+    getCurrentForecast(latitude: number, longitude: number) {
         let url = `${this.baseUrl}/current?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`; 
         console.log(url);
         return this.http.get<WeatherBit.Current.Result>(url);           
-    }      
+    }  
+    getDailyForecast(latitude: number, longitude: number) {
+        let url = `${this.baseUrl}/forecast/daily?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`;         
+        console.log(url);
+        return this.http.get<WeatherBit.Daily.Result>(url);           
+    }          
 }
 
 @Injectable({

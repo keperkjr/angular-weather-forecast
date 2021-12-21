@@ -10,7 +10,7 @@ import { Utils } from '../utils'
 export class CurrentForecastComponent implements OnInit {
 
     @Input()
-    forecast!: WeatherBit.Current.Weather;
+    forecast!: WeatherBit.Current.Forecast;
 
     localDate!: string;
     
