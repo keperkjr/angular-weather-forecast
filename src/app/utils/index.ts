@@ -33,26 +33,26 @@ export namespace Utils {
         return deg * (Math.PI/180)
     }  
 
-    export function convertTimezone(date: Date, timezone: string) {
-        return new Date((typeof date === "string" ? new Date(date) : date).toLocaleString("en-US", {timeZone: timezone}));   
+    export function convertTimezone(date: Date | string, timezone: string) {
+        return new Date((typeof date === 'string' ? new Date(date) : date).toLocaleString('en-US', {timeZone: timezone}));   
     } 
     
-    export function treatAsUTC (date: Date) {
+    export function treatAsUTC(date: Date) {
         let result = new Date(date);
         result.setMinutes(result.getMinutes() - result.getTimezoneOffset());
         return result;
     } 
 
-    export function getWeekdayName(date: Date) {
-        return date.toLocaleDateString('en-US', { weekday: 'long' });        
+    export function getWeekdayName(date: Date, locale: string = 'en-US') {
+        return date.toLocaleDateString(locale, { weekday: 'long' });        
     } 
     
-    export function getDateString(date: Date) {
-        return date.toLocaleDateString('en-US');
+    export function getDateString(date: Date, locale: string = 'en-US') {
+        return date.toLocaleDateString(locale);
     }
 
-    export function getTimeString(date: Date) {
-        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+    export function getTimeString(date: Date, locale: string = 'en-US') {
+        return date.toLocaleString(locale, { hour: 'numeric', minute: 'numeric', hour12: true });
     }     
     
     export function getDateTimeString(date: Date) {
