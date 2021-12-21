@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { WeatherBit } from '../models/weatherbit';
 
 @Component({
   selector: 'app-daily-forecast',
@@ -7,9 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DailyForecastComponent implements OnInit {
 
-  constructor() { }
+    @Input()
+    forecast!: WeatherBit.Daily.Forecast;
+        
+    constructor() { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
 }

@@ -1,5 +1,5 @@
 <!-- Toolbar -->
-<div class="toolbar" role="banner">
+<nav class="toolbar" role="banner">
     <a [href]="baseUrl">
         <img
             width="40"
@@ -15,21 +15,21 @@
         >
         </app-forecast-location-search>
     </div>
-</div>
+</nav>
 
-<div class="content" role="main">
+<main class="content" role="main">
     <ng-container
         *ngTemplateOutlet="isLoading ? loading: notLoading">
     </ng-container>    
     <ng-template #loading> 
-        <div class="spinner-container">
+        <section class="spinner-container">
             <div class="spinner-container-border">
                 <mat-spinner></mat-spinner>
             </div>
-        </div>
+        </section>
     </ng-template>  
     <ng-template #notLoading>
-        <div class="current-forecast-container">
+        <section class="forecast-container">
             <app-forecast-location *ngIf="currentLocation"
                 [location]="currentLocation"
             >
@@ -37,6 +37,12 @@
             <app-current-forecast *ngIf="currentForecast"
                 [forecast]="currentForecast"
             ></app-current-forecast>
-        </div>
+        </section>
+
+        <section class="forecast-container daily">
+            <app-daily-forecast>
+                
+            </app-daily-forecast>
+        </section>
     </ng-template>  
-</div>
+</main>

@@ -104,4 +104,42 @@ export namespace WeatherBit {
         code: number
         description: string
     }
+
+    export function getForcastImgSrc(icon: string) {
+        return `https://www.weatherbit.io/static/img/icons/${icon}.png`;
+    }    
+
+    export function  getAirQualityDescription(aqi: number) {
+        let result = '';
+        if (aqi >= 301) {
+            result = 'Dangerous';
+        } else if (aqi >= 201) {
+            result = 'Very Unhealthy';
+        } else if (aqi >= 151) {
+            result = 'Unhealthy';
+        } else if (aqi >= 101) {
+            result = 'Poor';
+        } else if (aqi >= 51) {
+            result = 'Fair';
+        } else {
+            result = 'Excellent';
+        }
+        return result;
+    }  
+
+    export function getUVIndexDescription(uv: number) {
+        let result = '';
+        if (uv >= 11) {
+            result = 'Extreme';
+        } else if (uv >= 8) {
+            result = 'Very High';
+        } else if (uv >= 6) {
+            result = 'High';
+        } else if (uv >= 3) {
+            result = 'Moderate';
+        } else {
+            result = 'Low';
+        }
+        return result;
+    }      
 }

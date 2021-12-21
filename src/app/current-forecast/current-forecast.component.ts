@@ -21,7 +21,7 @@ export class CurrentForecastComponent implements OnInit {
     }
 
     getForcastImgSrc() {
-        return `https://www.weatherbit.io/static/img/icons/${this.forecast.weather.icon}.png`
+        return WeatherBit.getForcastImgSrc(this.forecast.weather.icon);
     }
 
     getTimeOfDay() {
@@ -55,7 +55,7 @@ export class CurrentForecastComponent implements OnInit {
 
     getLastUpdated() {
         let date = new Date(this.forecast.ob_time);
-        return Utils.getTimeString(Utils.treatAsUTC(date));
+        return Utils.getTimeString(this.toLocalDatetime(Utils.treatAsUTC(date)));
     }
 
     toLocalDatetime(date: Date) {
@@ -63,21 +63,7 @@ export class CurrentForecastComponent implements OnInit {
     }
 
     getAirQualityDescription() {
-        let result = '';
-        if (this.forecast.aqi >= 301) {
-            result = 'Dangerous';
-        } else if (this.forecast.aqi >= 201) {
-            result = 'Very Unhealthy';
-        } else if (this.forecast.aqi >= 151) {
-            result = 'Unhealthy';
-        } else if (this.forecast.aqi >= 101) {
-            result = 'Poor';
-        } else if (this.forecast.aqi >= 51) {
-            result = 'Fair';
-        } else {
-            result = 'Excellent';
-        }
-        return result;
+        return WeatherBit.getAirQualityDescription(this.forecast.aqi);
     }
 
     getAirQualityCss() {
@@ -87,19 +73,7 @@ export class CurrentForecastComponent implements OnInit {
     } 
     
     getUVIndexDescription() {
-        let result = '';
-        if (this.forecast.uv >= 11) {
-            result = 'Extreme';
-        } else if (this.forecast.uv >= 8) {
-            result = 'Very High';
-        } else if (this.forecast.uv >= 6) {
-            result = 'High';
-        } else if (this.forecast.uv >= 3) {
-            result = 'Moderate';
-        } else {
-            result = 'Low';
-        }
-        return result;
+        return WeatherBit.getUVIndexDescription(this.forecast.uv);
     }
 
     getUVIndexCss() {
