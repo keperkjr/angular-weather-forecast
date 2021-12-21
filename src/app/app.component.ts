@@ -15,19 +15,17 @@ import { RuntimeError } from './models/errors';
 })
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
-    locationApiAvailable = false;
-    weatherApiAvailable = false;
+    locationApiAvailable = true;
 
     debug = true;
 
     isLoading = false;
-    location!: PositionStack.Location;
+    initialLocation!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
     currentForecast!: WeatherBit.Current.Forecast;
     dailyForecast!: WeatherBit.Daily.Result;
 
     baseUrl: string;
-    ipAddress = '';
     lastSearchData = {
         searchQuery: '',
         longitude: 0,
@@ -40,36 +38,51 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         if (!this.debug) {
-            this.getInitialLocation().then(() => {
-                console.log('Initial location loaded')
+            this.isLoading = true;
+            this.loadInitialForecast().then(() => {
+                console.log('Initial forecast loaded');
+                this.isLoading = false;
             }).catch((error) => {
-                console.log(error);
+                console.log(error); 
+                this.isLoading = false;              
             });
         } else {
             this.locationApiAvailable = true;
-            this.weatherApiAvailable = true;
-        }
-
-        if (!this.locationApiAvailable) {
-            // Call function prompting for gps
         }
     }
 
-    async getInitialLocation() {
-        let ipData = await this.getIPAddress();
-        this.ipAddress = ipData.ip;
-        let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {ipAddress: this.ipAddress});
-        this.locationApiAvailable = true;
+    async loadInitialForecast() {
+        try {
+            await this.ipAddressSearch();
+        } catch (error) {
+            if (error instanceof RuntimeError.ForecastLocationError) {
+                this.locationApiAvailable = false;
+            }
+            try {
+                console.log('Location api is unavailable, getting forecast from gps position', error);
+                let position = await Utils.getCurrentPosition();
+                await this.gpsSearch(position.coords.latitude, position.coords.longitude);             
+            } catch(error2) {
+                this.displayError(error2);             
+            }
+        }
+    }
 
-        this.currentLocation = locationResults.data[0];
-        this.location = this.currentLocation;
-        let longitude = this.location.longitude;
-        let latitude = this.location.latitude;
+    async ipAddressSearch() {
+        let ipData = await this.getIPAddress();
+        let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {
+            ipAddress: ipData.ip
+        });
+
+        this.initialLocation = locationResults.data[0];
+        let longitude = this.initialLocation.longitude;
+        let latitude = this.initialLocation.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentForecast = forecast.currentForecast;
 
-        this.weatherApiAvailable = true;
+        this.currentForecast = forecast.current;
+        this.dailyForecast = forecast.daily
+        this.currentLocation = this.initialLocation;
     }
 
     async getIPAddress(): Promise<any> {
@@ -90,59 +103,77 @@ export class AppComponent implements OnInit {
     }  
       
     async querySearch(searchQuery: string) {
-        if (this.location == null || this.lastSearchData.searchQuery != searchQuery) {
+        let searchLocation = this.currentLocation;
+        if (this.locationApiAvailable && 
+            (this.currentLocation == null || this.lastSearchData.searchQuery != searchQuery)) {
             let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
-            this.location = locationResults.data[0];
+            searchLocation = locationResults.data[0];
 
             // Get the location that is the shortest distance from the user
-            if (this.currentLocation != null) {
-                this.location = this.getNearestLocation(this.currentLocation.latitude, this.currentLocation.longitude, locationResults);
+            if (this.initialLocation != null) {
+                searchLocation = this.getNearestLocation(this.initialLocation.latitude, this.initialLocation.longitude, locationResults);
             }
         }
 
-        let longitude = this.location.longitude;
-        let latitude = this.location.latitude;
+        let longitude = searchLocation.longitude;
+        let latitude = searchLocation.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentForecast = forecast.currentForecast;  
-        
+
+        this.currentForecast = forecast.current;  
+        this.dailyForecast = forecast.daily; 
+        this.currentLocation = searchLocation;
+
         this.lastSearchData.longitude = longitude;
         this.lastSearchData.latitude = latitude;
         this.lastSearchData.searchQuery = searchQuery;        
     }
 
-    async gpsSearch(latitude: number, longitude: number) {        
-        if (this.location == null || this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude) {
+    async gpsSearch(latitude: number, longitude: number) {   
+        let searchLocation = this.currentLocation;     
+        if (this.locationApiAvailable && 
+            (this.currentLocation == null || this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
             this.lastSearchData.searchQuery = '';
 
             let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
             });
-            this.location = locationResults.data[0];
+            searchLocation = locationResults.data[0];
         }
 
         let forecast = await this.getForecast(latitude, longitude);
-        this.currentForecast = forecast.currentForecast;  
+
+        this.currentForecast = forecast.current;
+        this.dailyForecast = forecast.daily; 
+        this.currentLocation = searchLocation;
 
         this.lastSearchData.longitude = longitude;
         this.lastSearchData.latitude = latitude;        
     }
     
     async getForecast(latitude: number, longitude: number) {
-        // Get forecase here
-        let currentForecastResults = await firstValueFrom(this.weatherBitApi.getCurrentForecast(latitude, longitude));
-        console.log(currentForecastResults);
-        if (currentForecastResults.count == 0 || currentForecastResults.data.length == 0) {
-            throw new RuntimeError.ForecastError(`No weather results returned for latitude: ${latitude}, longitude: ${longitude}`);
+        // Get current forecast
+        let current = await firstValueFrom(this.weatherBitApi.getCurrentForecast(latitude, longitude));
+        console.log(current);
+        if (current.count == 0 || current.data.length == 0) {
+            throw new RuntimeError.ForecastError(`No current forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
         }
+
+        // Get daily forecast
+        let daily = await firstValueFrom(this.weatherBitApi.getDailyForecast(latitude, longitude));
+        console.log(daily);
+        if (daily.data.length == 0) {
+            throw new RuntimeError.ForecastError(`No daily forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
+        }
+
         return {
-            currentForecast: currentForecastResults.data[0],
+            current: current.data[0],
+            daily: daily
         };
     } 
 
-    // TODO: Only do this if location api is available
     async getForecastLocation(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
         let observable!: Observable<PositionStack.Result>;
         switch(type) {
@@ -164,7 +195,7 @@ export class AppComponent implements OnInit {
         if (geocode.error != null) {
             throw new RuntimeError.ForecastLocationError(geocode.error.message, type);
         }  else if (!geocode.data || geocode.data.length == 0) {
-            throw new RuntimeError.ForecastLocationError('No results returned', type);
+            throw new RuntimeError.ForecastLocationError('No forecast location results returned', type);
         }
         return geocode;
     }
@@ -207,8 +238,8 @@ export class AppComponent implements OnInit {
                     throw new Error(`Unknown search type: ${type}`);
                     break;
             }
-            if (this.location != null) {
-                console.log('Selected Location:', this.location);
+            if (this.currentLocation != null) {
+                console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {
             this.displayError(error);

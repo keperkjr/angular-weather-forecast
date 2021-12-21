@@ -43,7 +43,7 @@ export class ForecastLocationSearchComponent implements OnInit {
             return;
         }
         let eventData = this.newEventData();
-        eventData.searchQuery = this.searchQuery,
+        eventData.searchQuery = this.searchQuery.trim(),
         eventData.type = ForecastLocationSearch.Type.SearchQuery,
 
         this.searchLocationEmitter.emit(eventData);
@@ -55,9 +55,9 @@ export class ForecastLocationSearchComponent implements OnInit {
             let position = await Utils.getCurrentPosition({maximumAge: 60 * locationCacheMinutes * 1000});
             let eventData = this.newEventData();
 
-            eventData.latitude = position.coords.latitude,
-            eventData.longitude = position.coords.longitude,
-            eventData.type = ForecastLocationSearch.Type.GPS,
+            eventData.latitude = position.coords.latitude;
+            eventData.longitude = position.coords.longitude;
+            eventData.type = ForecastLocationSearch.Type.GPS;
 
             this.searchLocationEmitter.emit(eventData);
         } catch (error) {
