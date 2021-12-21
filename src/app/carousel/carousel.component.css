@@ -1,0 +1,40 @@
+.custom-slider-main {
+    display: flex;
+    overflow: hidden;    
+    scroll-behavior: smooth;
+}
+
+.carousel-container {
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+  
+.carousel-control {
+    width: 100px;
+}
+.carousel-control.left {
+    text-align: left;
+}
+
+.carousel-control.right {
+    text-align: right;
+}
+
+.carousel-content {
+    display: inline-block;
+    width: 90%;
+    overflow: hidden;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+    
+}
+
+.info-widget {
+    width: 150px;
+    height: 300px;
+    display: inline-block;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 8px;
+}

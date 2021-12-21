@@ -13,6 +13,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CurrentForecastComponent } from './current-forecast/current-forecast.component';
 import { DailyForecastComponent } from './daily-forecast/daily-forecast.component';
+import { CarouselComponent } from './carousel/carousel.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DailyForecastComponent } from './daily-forecast/daily-forecast.componen
     ForecastLocationSearchComponent,
     CurrentForecastComponent,
     DailyForecastComponent,
+    CarouselComponent,
   ],
   imports: [
     BrowserModule,
