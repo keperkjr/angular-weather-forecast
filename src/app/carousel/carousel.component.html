@@ -7,24 +7,10 @@
         </button>                
     </div>
     <div #widgetsContent class="carousel-content">
-        <div class="info-widget">
-            WIDGET
-        </div>
-        <div class="info-widget">
-            WIDGET
-        </div>
-        <div class="info-widget">
-            WIDGET
-        </div>
-        <div class="info-widget">
-            WIDGET
-        </div>
-        <div class="info-widget">
-            WIDGET
-        </div>
-        <div class="info-widget">
-            WIDGET
-        </div>
+        <!-- <ng-container *ngFor="let datum of data">
+            <ng-container *ngTemplateOutlet="tmpl; context: { $implicit: datum }"></ng-container>
+        </ng-container> -->
+        <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
     </div>
     <div class="carousel-control right">
         <button mat-mini-fab color="primary"

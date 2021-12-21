@@ -39,15 +39,24 @@
             ></app-current-forecast>
         </section>
 
-        <section class="forecast-container daily" *ngIf="currentDailyForecast && currentDailyForecast.length > 0 || true">
+        <!-- <section class="forecast-container daily" *ngIf="currentDailyForecast && currentDailyForecast.length > 0 || true">
             <app-daily-forecast *ngFor="let forecast of currentDailyForecast; index as index"
                 [forecast]="forecast"
+                [timezone]="currentForecast.timezone"
             >
             </app-daily-forecast>
-        </section>
+        </section> -->
 
         <section class="forecast-container">
-            <app-carousel></app-carousel>
+            <app-carousel [data]="currentDailyForecast">
+                <ng-template let-item>
+                    <app-daily-forecast 
+                        [forecast]="item"
+                        [timezone]="currentForecast.timezone"
+                    >
+                    </app-daily-forecast>
+                </ng-template>
+            </app-carousel>
         </section>
         
     </ng-template>  

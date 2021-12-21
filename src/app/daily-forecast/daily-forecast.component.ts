@@ -10,6 +10,9 @@ export class DailyForecastComponent implements OnInit {
 
     @Input()
     forecast!: WeatherBit.Daily.Forecast;
+
+    @Input()
+    timezone!: string;
         
     constructor() { }
 
