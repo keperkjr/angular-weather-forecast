@@ -23,8 +23,8 @@ export class AppComponent implements OnInit {
     isLoading = false;
     location!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
-    currentForecast!: WeatherBit.Weather;
-    futureForecast!: WeatherBit.Result;
+    currentForecast!: WeatherBit.Current.Weather;
+    futureForecast!: WeatherBit.Future.Result;
 
     baseUrl: string;
     ipAddress = '';

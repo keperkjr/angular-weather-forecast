@@ -20,7 +20,7 @@ export class WeatherBitApiService extends ApiService {
     getCurrentWeather(latitude: number, longitude: number) {
         let url = `${this.baseUrl}/current?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`; 
         console.log(url);
-        return this.http.get<WeatherBit.Result>(url);           
+        return this.http.get<WeatherBit.Current.Result>(url);           
     }      
 }
 
