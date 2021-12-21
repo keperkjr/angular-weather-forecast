@@ -62,7 +62,7 @@ export class CurrentForecastComponent implements OnInit {
         return Utils.convertTimezone(date, this.forecast.timezone);
     }
 
-    getAirQuality() {
+    getAirQualityDescription() {
         let result = '';
         if (this.forecast.aqi >= 301) {
             result = 'Dangerous';
@@ -81,8 +81,30 @@ export class CurrentForecastComponent implements OnInit {
     }
 
     getAirQualityCss() {
-        let airQuality = this.getAirQuality();
-        let className = airQuality.replace(' ', '-').toLowerCase();
+        let desc = this.getAirQualityDescription();
+        let className = desc.replace(' ', '-').toLowerCase();
         return `air-quality ${className}`;
+    } 
+    
+    getUVIndexDescription() {
+        let result = '';
+        if (this.forecast.uv >= 11) {
+            result = 'Extreme';
+        } else if (this.forecast.uv >= 8) {
+            result = 'Very High';
+        } else if (this.forecast.uv >= 6) {
+            result = 'High';
+        } else if (this.forecast.uv >= 3) {
+            result = 'Moderate';
+        } else {
+            result = 'Low';
+        }
+        return result;
+    }
+
+    getUVIndexCss() {
+        let desc = this.getUVIndexDescription();
+        let className = desc.replace(' ', '-').toLowerCase();
+        return `uv-index ${className}`;
     }    
 }

@@ -27,12 +27,16 @@
         </div>  
         <div class="details-row">
             <span>Air Quality</span>
-            <span class="details-value" [ngClass]="getAirQualityCss()">{{ getAirQuality() }}</span>
-        </div>                    
+            <span class="details-value" [ngClass]="getAirQualityCss()">{{ getAirQualityDescription() }}</span>
+        </div>    
+        <div class="details-row">
+            <span>UV Index</span>
+            <span class="details-value" [ngClass]="getUVIndexCss()">{{ getUVIndexDescription() }}</span>
+        </div>                          
         <div class="details-row">
             <span>Humidity</span>
             <span class="details-value">{{ forecast.rh }}%</span>
-        </div>
+        </div>       
         <div class="details-row">
             <span>Wind Speed / Direction</span>
             <span class="details-value">{{ forecast.wind_spd }} mph / {{ forecast.wind_cdir }}</span>
