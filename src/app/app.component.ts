@@ -23,7 +23,7 @@ export class AppComponent implements OnInit {
     initialLocation!: PositionStack.Location;
     currentLocation!: PositionStack.Location;
     currentForecast!: WeatherBit.Current.Forecast;
-    dailyForecast!: WeatherBit.Daily.Result;
+    currentDailyForecast!: WeatherBit.Daily.Forecast[];
 
     baseUrl: string;
     lastSearchData = {
@@ -81,7 +81,7 @@ export class AppComponent implements OnInit {
         let forecast = await this.getForecast(latitude, longitude);
 
         this.currentForecast = forecast.current;
-        this.dailyForecast = forecast.daily
+        this.currentDailyForecast = forecast.daily
         this.currentLocation = this.initialLocation;
     }
 
@@ -123,7 +123,7 @@ export class AppComponent implements OnInit {
         let forecast = await this.getForecast(latitude, longitude);
 
         this.currentForecast = forecast.current;  
-        this.dailyForecast = forecast.daily; 
+        this.currentDailyForecast = forecast.daily; 
         this.currentLocation = searchLocation;
 
         this.lastSearchData.longitude = longitude;
@@ -146,7 +146,7 @@ export class AppComponent implements OnInit {
         let forecast = await this.getForecast(latitude, longitude);
 
         this.currentForecast = forecast.current;
-        this.dailyForecast = forecast.daily; 
+        this.currentDailyForecast = forecast.daily; 
         this.currentLocation = searchLocation;
 
         this.lastSearchData.longitude = longitude;
@@ -163,14 +163,10 @@ export class AppComponent implements OnInit {
 
         // Get daily forecast
         let daily = await firstValueFrom(this.weatherBitApi.getDailyForecast(latitude, longitude));
-        console.log(daily);
-        if (daily.data.length == 0) {
-            throw new RuntimeError.ForecastError(`No daily forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
-        }
 
         return {
             current: current.data[0],
-            daily: daily
+            daily: daily.data
         };
     } 
 

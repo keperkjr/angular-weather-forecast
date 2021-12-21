@@ -2,7 +2,7 @@
     <div class="current-weather">
         <h2>Current Weather</h2>
     </div>
-    <section class="forecast-container">
+    <section class="current-forecast-container">
         <div class="outside time">
             {{ localDate }}
         </div>
@@ -20,7 +20,7 @@
             {{ getTimeOfDay() }} - {{ getOutsideDescription() }}
         </div>       
     </section> 
-    <section class="forecast-details-container"> 
+    <section class="current-forecast-details-container"> 
         <div class="details-row" *ngIf="forecast.sunrise && forecast.sunset">
             <span> Sunrise /  Sunset</span>
             <span class="details-value">{{ getLocalSunrise() }} / {{ getLocalSunset() }}</span>

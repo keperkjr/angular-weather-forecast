@@ -1,4 +1,4 @@
-.forecast-container {
+.current-forecast-container {
     width: 50%;
     display: inline-block;
 }
@@ -31,7 +31,7 @@
     opacity: 0.5;
     margin-top: unset;
 }
-.forecast-details-container {
+.current-forecast-details-container {
     width: 50%;
     display: inline-block;
     vertical-align: top;
@@ -76,12 +76,12 @@
 }
 
 @media screen and (max-width: 767px) {
-    .forecast-container {
+    .current-forecast-container {
         margin-left: unset;
         width: unset;
         display: initial;
     }    
-    .forecast-details-container {
+    .current-forecast-details-container {
         display: initial;
         width: unset;
         vertical-align: unset;

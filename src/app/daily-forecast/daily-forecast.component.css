@@ -1,0 +1,32 @@
+.daily-forecast-container {
+    border-radius: 8px;
+    border: 1px solid #eee;
+    height: 300px;
+    width: 180px;
+    display: inline-block;
+    margin: 5px;
+}
+.forecast-date {
+    line-height: 15px;
+    margin-top: 15px;
+    font-size: 15px;
+    font-weight: bold;
+    opacity: 0.5;  
+}
+.weather-icon {
+    height: 88px;
+    width: 88px;   
+    margin-top: 15px;
+}
+.high-temp, .low-temp {
+    font-weight: bold;
+    display: inline-block
+}
+.low-temp {
+    opacity: 0.5;
+    margin-left: 5px;
+}
+.forecast-description {
+    margin-top: -15px;
+    margin-bottom: 10px;
+}

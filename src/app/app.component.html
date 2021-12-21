@@ -39,9 +39,10 @@
             ></app-current-forecast>
         </section>
 
-        <section class="forecast-container daily">
-            <app-daily-forecast>
-                
+        <section class="forecast-container daily" *ngIf="currentDailyForecast && currentDailyForecast.length > 0 || true">
+            <app-daily-forecast *ngFor="let forecast of currentDailyForecast; index as index"
+                [forecast]="forecast"
+            >
             </app-daily-forecast>
         </section>
     </ng-template>  

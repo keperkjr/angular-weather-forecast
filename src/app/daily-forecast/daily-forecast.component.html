@@ -1,1 +1,25 @@
-<p>daily-forecast works!</p>
+<div class="daily-forecast-container">
+    <section class="forecast-date">
+        {{ getForcastDateString() }}
+    </section>
+    <section>
+        <div>
+            <img class="weather-icon" [src]="getForcastImgSrc()" alt="Forcast" />
+            <div class="forecast-description">
+                {{ forecast.weather.description }}
+            </div>
+        </div>
+        <div class="high-temp">
+            {{ forecast.max_temp }}°
+        </div>
+        <div class="low-temp">
+            {{ forecast.low_temp }}°
+        </div>
+    </section>
+    <div>
+        <span title="Rain">☂️</span> {{ forecast.pop }}%
+    </div>
+    <div>
+        <span title="Wind">💨</span> {{ forecast.wind_cdir }} {{ forecast.wind_spd }} mph
+    </div>
+</div>

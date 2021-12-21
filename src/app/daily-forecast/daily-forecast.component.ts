@@ -16,4 +16,19 @@ export class DailyForecastComponent implements OnInit {
     ngOnInit(): void {
     }
 
+    getForcastDateString() {
+        let date = new Date(this.forecast.valid_date);
+        date.setHours(23);
+        return date.toLocaleString('en-US', {
+            month: 'short',
+            day  : '2-digit',
+            weekday: "short",
+            timeZone: 'UTC',
+        });       
+    }
+
+    getForcastImgSrc() {
+        return WeatherBit.getForcastImgSrc(this.forecast.weather.icon);
+    }
+
 }
