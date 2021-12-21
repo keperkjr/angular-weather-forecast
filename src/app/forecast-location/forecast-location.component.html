@@ -6,6 +6,6 @@
         </span>
     </span>
     <span class="region">
-         {{ location.region }}, {{ location.country}}
+         <span *ngIf="location.region">{{ location.region }},</span> {{ location.country}}
     </span>
 </div>
