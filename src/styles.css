@@ -8,7 +8,7 @@ body {
     background-position: center;
     background-origin: content-box;
     background-repeat: no-repeat;
-    background-size: cover;
+    background-size: auto;
     /* min-height:100vh; */
 }
 

@@ -33,10 +33,6 @@ export class DailyForecastComponent implements OnInit {
         if (date.getMonth() == localDate.getMonth() 
             && date.getDate() == localDate.getDate() 
             && date.getFullYear() == localDate.getFullYear()) {
-
-        console.log('date', date);
-        console.log('localDate', localDate);
-
             return 'Today';
         }
 
