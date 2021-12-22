@@ -57,6 +57,9 @@
     margin-top: 15px;
     text-align: center;
 }
+.daily-forecast-title {
+    text-align: center;
+}
 @media screen and (max-width: 767px) {
     .title {
         max-width: 220px;
@@ -64,6 +67,9 @@
     .forecast-container {
         text-align: center;
     }    
+    .current-forecast-title {
+        margin-top: 15px;
+    }     
 }
 
 /* ------------------ */

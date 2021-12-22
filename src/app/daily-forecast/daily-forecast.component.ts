@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { WeatherBit } from '../models/weatherbit';
+import { Utils } from '../utils';
 
 @Component({
   selector: 'app-daily-forecast',
@@ -13,19 +14,36 @@ export class DailyForecastComponent implements OnInit {
 
     @Input()
     timezone!: string;
-        
+    
+    forecastDateString!: string;
     constructor() { }
 
     ngOnInit(): void {
+        this.forecastDateString = this.getForcastDateString();
     }
 
     getForcastDateString() {
-        let date = new Date(this.forecast.valid_date);
-        date.setHours(23);
+        let localDate = this.toLocalDatetime(new Date());
+
+        let parts = this.forecast.valid_date.split('-');
+        // Please pay attention to the month (parts[1]); JavaScript counts months from 0:
+        // January - 0, February - 1, etc.
+        let date = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));         
+
+        if (date.getMonth() == localDate.getMonth() 
+            && date.getDate() == localDate.getDate() 
+            && date.getFullYear() == localDate.getFullYear()) {
+
+        console.log('date', date);
+        console.log('localDate', localDate);
+
+            return 'Today';
+        }
+
         return date.toLocaleString('en-US', {
             month: 'short',
             day  : '2-digit',
-            weekday: "short",
+            weekday: 'short',
             timeZone: 'UTC',
         });       
     }
@@ -42,5 +60,9 @@ export class DailyForecastComponent implements OnInit {
         let desc = this.getUVIndexDescription();
         let className = desc.replace(' ', '-').toLowerCase();
         return `uv-index ${className}`;
-    }     
+    }    
+    
+    toLocalDatetime(date: Date) {
+        return Utils.convertTimezone(date, this.timezone);
+    }    
 }

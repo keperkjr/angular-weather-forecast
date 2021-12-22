@@ -48,8 +48,5 @@
         display: initial;
         width: unset;
         vertical-align: unset;
-    }
-    .current-weather {
-        margin-top: 15px;
-    }    
+    }   
 }

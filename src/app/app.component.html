@@ -34,6 +34,9 @@
                 [location]="currentLocation"
             >
             </app-forecast-location>
+            <div class="current-forecast-title">
+                <h2>Current Forecast</h2>
+            </div>            
             <app-current-forecast *ngIf="currentForecast"
                 [forecast]="currentForecast"
             ></app-current-forecast>
@@ -48,6 +51,9 @@
         </section> -->
 
         <section class="forecast-container">
+            <div class="daily-forecast-title">
+                <h2>Daily Forecast</h2>
+            </div>            
             <app-carousel [data]="currentDailyForecast">
                 <ng-template let-item>
                     <app-daily-forecast 

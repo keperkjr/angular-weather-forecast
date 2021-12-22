@@ -21,8 +21,8 @@ export class CarouselComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        console.log(this.content.nativeElement.scrollWidth);
-        console.log(this.content.nativeElement.offsetWidth);
+        // Total width
+        // console.log(this.content.nativeElement.scrollWidth);
     }
 
     scrollLeft() {
