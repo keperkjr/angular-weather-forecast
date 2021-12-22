@@ -36,27 +36,27 @@ export class CarouselComponent implements OnInit {
         this.adjustScrollPosition(this.scrollWidth);
     } 
     
-    adjustScrollPosition(increment: number) {
-        this.content.nativeElement.scrollLeft += increment;
+    adjustScrollPosition(adjustment: number) {
+        this.content.nativeElement.scrollLeft += adjustment;
 
-        let newPercent = 100 * ((this.content.nativeElement.scrollLeft + increment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
+        let newPercent = 100 * ((this.content.nativeElement.scrollLeft + adjustment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
         this.percent = Math.max(0, Math.min(newPercent, 100));
     }
-    
+
     // Horizontal touch scroll
     addTouchScroll() {
         let startPos = 0;
         let element = this.content.nativeElement;
 
         element.addEventListener("touchstart", (event: any) => {
-            // startPos = element.scrollLeft + event.touches[0].pageX; 
             startPos = event.touches[0].pageX;
         });
 
         element.addEventListener("touchmove", (event: any) => {
-            // element.scrollLeft = startPos - event.touches[0].pageX;
-            let endPos = startPos - event.touches[0].pageX;
-            this.adjustScrollPosition(endPos);              
+            let adjustment = startPos - event.touches[0].pageX;
+            // If 'adjustment' is positive, user made a movement the right direction
+            // else user made a movement in the left direction
+            this.adjustScrollPosition(adjustment);              
         });
     }   
 }

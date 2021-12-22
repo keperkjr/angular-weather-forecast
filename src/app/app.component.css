@@ -71,6 +71,16 @@
         margin-top: 15px;
     }     
 }
+@media screen and (max-width: 625px) {  
+    .site-title {
+        max-width: 180px;
+    }     
+}
+@media screen and (max-width: 550px) {  
+    .site-title {
+        display: none;
+    }     
+}
 
 /* ------------------ */
 
