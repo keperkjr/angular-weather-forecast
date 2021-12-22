@@ -9,8 +9,8 @@ export class CarouselComponent implements OnInit {
     @ContentChild(TemplateRef)
     tmpl!: TemplateRef<any>;
     
-    @ViewChild('widgetsContent')
-    widgetsContent!: ElementRef;
+    @ViewChild('content')
+    content!: ElementRef;
 
     @Input()
     data!: any[];
@@ -19,14 +19,18 @@ export class CarouselComponent implements OnInit {
 
     ngOnInit(): void {
     }
-    scrollLeft(){
-        // this.widgetsContent.nativeElement.scrollLeft -= 150;
-        this.widgetsContent.nativeElement.scrollLeft -= this.widgetsContent.nativeElement.scrollWidth; 
+
+    ngAfterViewInit(): void {
+        console.log(this.content.nativeElement.scrollWidth);
+        console.log(this.content.nativeElement.offsetWidth);
+    }
+
+    scrollLeft() {
+        this.content.nativeElement.scrollLeft -= 150;
       }
     
-      scrollRight(){
-        // this.widgetsContent.nativeElement.scrollLeft += 150;
-        this.widgetsContent.nativeElement.scrollLeft += this.widgetsContent.nativeElement.scrollWidth; 
+      scrollRight() {
+        this.content.nativeElement.scrollLeft += 150;
       }    
 
 }

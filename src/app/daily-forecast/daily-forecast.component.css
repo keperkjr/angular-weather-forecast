@@ -1,6 +1,6 @@
 .daily-forecast-container {
     border-radius: 8px;
-    border: 1px solid #eee;
+    border: 1px solid lightgrey;
     width: 180px;
     display: inline-block;
     margin: 5px;
@@ -27,7 +27,7 @@
 }
 .forecast-description {
     margin-top: -15px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 .details-row {
     align-items: center;
@@ -43,6 +43,6 @@
     opacity: 0.5;
 }
 .daily-details-section {
-    margin: 10px auto 0;
+    margin: 12px auto 0;
     font-weight: bold;
 }

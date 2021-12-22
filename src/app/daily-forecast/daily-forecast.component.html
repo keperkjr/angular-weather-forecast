@@ -22,17 +22,17 @@
             <span title="Chance of rain">☂️ </span>
             <span class="details-value">{{ forecast.pop }}%</span>
         </div>
-        <!-- <div>
+        <div>
             <span title="Humidity">😰 </span>
             <span class="details-value">{{ forecast.rh }}%</span>
         </div>  
         <div>
             <span title="UV Index">🕶 </span>
             <span class="details-value" [ngClass]="getUVIndexCss()">{{ getUVIndexDescription() }}</span>
-        </div>          -->
+        </div>         
         <div>
-            <span title="Wind direction / speed">💨 </span>
-            <span class="details-value">{{ forecast.wind_cdir }} {{ forecast.wind_spd }} mph</span>
+            <span title="Wind speed / direction">💨 </span>
+            <span class="details-value">{{ forecast.wind_spd }} mph {{ forecast.wind_cdir }}</span>
         </div>                  
     </section>           
 </div>

@@ -1,19 +1,16 @@
 <div class="carousel-container">
     <div class="carousel-control left">
-        <button mat-mini-fab color="primary"
+        <button mat-mini-fab color="primary" class="carousel-btn"
             (click)="scrollLeft()"
         >
             <mat-icon>keyboard_arrow_left</mat-icon>
         </button>                
     </div>
-    <div #widgetsContent class="carousel-content">
-        <!-- <ng-container *ngFor="let datum of data">
-            <ng-container *ngTemplateOutlet="tmpl; context: { $implicit: datum }"></ng-container>
-        </ng-container> -->
+    <div #content class="carousel-content">
         <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
     </div>
     <div class="carousel-control right">
-        <button mat-mini-fab color="primary"
+        <button mat-mini-fab color="primary" class="carousel-btn"
             (click)="scrollRight()"
         >
             <mat-icon>keyboard_arrow_right</mat-icon>
