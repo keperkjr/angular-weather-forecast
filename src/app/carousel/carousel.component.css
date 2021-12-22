@@ -1,33 +1,40 @@
-.custom-slider-main {
-    display: flex;
-    overflow: hidden;    
-    scroll-behavior: smooth;
-}
-
 .carousel-container {
     display: flex;
     text-align: center;
     align-items: center;
+    justify-content: center;
 }
-  
 .carousel-control {
     width: 20px;
+    display: inline-block;
 }
 .carousel-control.left {
     text-align: left;
 }
-
 .carousel-control.right {
     text-align: right;
 }
-
 .carousel-content {
     display: inline-block;
-    width: 90%;
+    width: 100%;
     overflow: hidden;
     white-space: nowrap;
     scroll-behavior: smooth;
 }
 .carousel-btn {
     background-color: darkblue;
+}
+.carousel-content-container {
+    overflow: hidden;
+    width: 90%;
+}
+.scrolling-bar {
+    margin: auto;
+}
+.scrolling {
+    background-color: #1976d2;
+    text-align: right;
+    width: 0;
+    height: 4px;
+    color: #1976d2;
 }
