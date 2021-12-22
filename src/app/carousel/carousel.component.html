@@ -9,14 +9,10 @@
     <div class="carousel-content-container">
         <div #content class="carousel-content">
             <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
-        </div>        
-
-        <!-- <progress max="100" [value]="percent"></progress> -->
-        
+        </div> 
         <div class="scrolling-bar">
             <div class="scrolling" [ngStyle]="{'width': percent + '%'}"></div>
-            <div id="scroll"></div>
-          </div>        
+        </div>        
     </div>
     <div class="carousel-control right">
         <button mat-mini-fab color="primary" class="carousel-btn"

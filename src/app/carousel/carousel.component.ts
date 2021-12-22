@@ -24,33 +24,22 @@ export class CarouselComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        // Total width
-        console.log('content.nativeElement.scrollWidth', this.content.nativeElement.scrollWidth);
-        console.log('content.nativeElement.scrollLeft', this.content.nativeElement.scrollLeft);
-        console.log('content.nativeElement.offsetWidth', this.content.nativeElement.offsetWidth);
-
-        // this.initialPosition = this.content.nativeElement.offsetWidth;
-        // this.endPosition = this.content.nativeElement.scrollWidth;
-
-        this.scrollPercent();
+        this.adjustScrollPosition(0);
     }
 
     scrollLeft() {
-        this.content.nativeElement.scrollLeft -= this.scrollWidth;
-        this.scrollPercent();
+        this.adjustScrollPosition(-this.scrollWidth);
+        
     }
 
     scrollRight() {
-        this.content.nativeElement.scrollLeft += this.scrollWidth;
-        this.scrollPercent()
+        this.adjustScrollPosition(this.scrollWidth);
     } 
     
-    scrollPercent() {
-        setTimeout(() => {
-            console.log('content.nativeElement.scrollLeft', this.content.nativeElement.scrollLeft);
+    adjustScrollPosition(increment: number) {
+        this.content.nativeElement.scrollLeft += increment;
 
-            this.percent = 100 * (this.content.nativeElement.scrollLeft / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
-            console.log(this.percent);
-        }, 500);
+        let newPercent = 100 * ((this.content.nativeElement.scrollLeft + increment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
+        this.percent = Math.max(0, Math.min(newPercent, 100));
     }
 }
