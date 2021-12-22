@@ -25,11 +25,11 @@ export class CarouselComponent implements OnInit {
 
     ngAfterViewInit(): void {
         this.adjustScrollPosition(0);
+        this.addTouchScroll();
     }
 
     scrollLeft() {
         this.adjustScrollPosition(-this.scrollWidth);
-        
     }
 
     scrollRight() {
@@ -42,4 +42,21 @@ export class CarouselComponent implements OnInit {
         let newPercent = 100 * ((this.content.nativeElement.scrollLeft + increment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
         this.percent = Math.max(0, Math.min(newPercent, 100));
     }
+    
+    // Horizontal touch scroll
+    addTouchScroll() {
+        let startPos = 0;
+        let element = this.content.nativeElement;
+
+        element.addEventListener("touchstart", (event: any) => {
+            // startPos = element.scrollLeft + event.touches[0].pageX; 
+            startPos = event.touches[0].pageX;
+        });
+
+        element.addEventListener("touchmove", (event: any) => {
+            // element.scrollLeft = startPos - event.touches[0].pageX;
+            let endPos = startPos - event.touches[0].pageX;
+            this.adjustScrollPosition(endPos);              
+        });
+    }   
 }
