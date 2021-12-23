@@ -12,14 +12,17 @@ export class CarouselComponent implements OnInit {
     @ViewChild('content')
     content!: ElementRef;
 
-    @ViewChild('progress')
-    progress!: ElementRef;
+    @ViewChild('progressScroll')
+    progressScroll!: ElementRef;
 
     @Input()
     data!: any[];
 
     @Input()
     buttonScrollWidth: number = 150;
+
+    @Input()
+    scrollStyle: 'progress-bar' | 'progress-scroll' | undefined;  
 
     progressBarWidth: number = 0;
     progressScrollLeft: number = 0;
@@ -52,9 +55,11 @@ export class CarouselComponent implements OnInit {
         let scrollPercentCompleted = (this.content.nativeElement.scrollLeft + adjustment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth);
         this.progressBarWidth = Math.max(0, Math.min(scrollPercentCompleted, 1)) * 100;
 
-        let progressScrollLeftEndPos = this.content.nativeElement.clientWidth - this.progress.nativeElement.clientWidth;
-        let newProgressScrollLeft = scrollPercentCompleted * progressScrollLeftEndPos;        
-        this.progressScrollLeft = Math.max(0, Math.min(newProgressScrollLeft, progressScrollLeftEndPos));
+        if (this.progressScroll && this.progressScroll.nativeElement) {
+            let progressScrollLeftEndPos = this.content.nativeElement.clientWidth - this.progressScroll.nativeElement.clientWidth;
+            let newProgressScrollLeft = scrollPercentCompleted * progressScrollLeftEndPos;        
+            this.progressScrollLeft = Math.max(0, Math.min(newProgressScrollLeft, progressScrollLeftEndPos));
+        }
     }
 
     // Horizontal touch scroll

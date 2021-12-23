@@ -28,16 +28,16 @@
     overflow: hidden;
     width: 90%;
 }
-.scrolling-bar {
+.carousel-progress-container {
     margin: auto;
 }
-.scrolling, .progress {
+.carousel-progress-bar, .carousel-progress-scroll {
     background-color: #1976d2;
     width: 0;
     height: 4px;
     transition: width 200ms, left 200ms;
 }
-.progress {
+.carousel-progress-scroll {
     position: relative;
     width: 100px;
 }
