@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = true;
+    debug = false;
 
     isLoading = false;
     initialLocation!: PositionStack.Location;
@@ -100,7 +100,7 @@ export class AppComponent implements OnInit {
     }
 
     async getIPAddress(): Promise<any> {
-        return firstValueFrom(this.http.get("http://api.ipify.org/?format=json"));
+        return firstValueFrom(this.http.get("https://api.ipify.org/?format=json"));
     }    
       
     async querySearch(searchQuery: string) {
@@ -157,7 +157,7 @@ export class AppComponent implements OnInit {
     async getForecast(latitude: number, longitude: number) {
         // Get current forecast
         let current = await firstValueFrom(this.weatherBitApi.getCurrentForecast(latitude, longitude));
-        console.log(current);
+        // console.log(current);
         if (current.count == 0 || current.data.length == 0) {
             throw new RuntimeError.ForecastError(`No current forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
         }
@@ -188,7 +188,7 @@ export class AppComponent implements OnInit {
                 break;
         }
         let geocode = await firstValueFrom(observable);
-        console.log(geocode);
+        // console.log(geocode);
         if (geocode.error != null) {
             throw new RuntimeError.ForecastLocationError(geocode.error.message, type);
         }  else if (!geocode.data || geocode.data.length == 0) {
@@ -198,7 +198,7 @@ export class AppComponent implements OnInit {
     }
 
     async onSearchLocation(eventData: any) {
-        console.log(eventData);
+        // console.log(eventData);
         this.isLoading = true;
         let type = eventData.type;
         try {
@@ -214,7 +214,7 @@ export class AppComponent implements OnInit {
                     break;
             }
             if (this.currentLocation != null) {
-                console.log('Selected Location:', this.currentLocation);
+                // console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {
             Utils.displayError(error);
