@@ -18,9 +18,11 @@ export class CarouselComponent implements OnInit {
     @Input()
     data!: any[];
 
-    percent: number = 0;
-    scrollWidth: number = 150;
-    progressLeft: number = 0;
+    @Input()
+    buttonScrollWidth: number = 150;
+
+    progressBarWidth: number = 0;
+    progressScrollLeft: number = 0;
 
     constructor() { }
 
@@ -30,30 +32,29 @@ export class CarouselComponent implements OnInit {
     ngAfterViewInit(): void {
         this.adjustScrollPosition(0);
         this.addTouchScroll();
+
+        window.addEventListener('resize', () => {
+            this.adjustScrollPosition(0);
+        });
     }
 
     scrollLeft() {
-        this.adjustScrollPosition(-this.scrollWidth);
+        this.adjustScrollPosition(-this.buttonScrollWidth);
     }
 
     scrollRight() {
-        this.adjustScrollPosition(this.scrollWidth);
+        this.adjustScrollPosition(this.buttonScrollWidth);
     } 
     
     adjustScrollPosition(adjustment: number) {
         this.content.nativeElement.scrollLeft += adjustment;
 
-        let newPercent = ((this.content.nativeElement.scrollLeft + adjustment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth));
-        this.percent = Math.max(0, Math.min(newPercent, 1)) * 100;
+        let scrollPercentCompleted = (this.content.nativeElement.scrollLeft + adjustment) / (this.content.nativeElement.scrollWidth - this.content.nativeElement.clientWidth);
+        this.progressBarWidth = Math.max(0, Math.min(scrollPercentCompleted, 1)) * 100;
 
-        let left = newPercent * ((this.content.nativeElement.clientWidth - this.progress.nativeElement.clientWidth));
-        
-        console.log('left:', left, 'percent:', this.percent, 
-            'this.content.nativeElement.clientWidth:', this.content.nativeElement.clientWidth,
-            'this.progress.nativeElement.clientWidth:', this.progress.nativeElement.clientWidth);
-
-        left = Math.max(0, Math.min(left, this.content.nativeElement.clientWidth - this.progress.nativeElement.clientWidth));
-        this.progress.nativeElement.style.left = left + 'px';
+        let progressScrollLeftEndPos = this.content.nativeElement.clientWidth - this.progress.nativeElement.clientWidth;
+        let newProgressScrollLeft = scrollPercentCompleted * progressScrollLeftEndPos;        
+        this.progressScrollLeft = Math.max(0, Math.min(newProgressScrollLeft, progressScrollLeftEndPos));
     }
 
     // Horizontal touch scroll
@@ -61,11 +62,11 @@ export class CarouselComponent implements OnInit {
         let startPos = 0;
         let element = this.content.nativeElement;
 
-        element.addEventListener("touchstart", (event: any) => {
+        element.addEventListener('touchstart', (event: any) => {
             startPos = event.touches[0].pageX;
         });
 
-        element.addEventListener("touchmove", (event: any) => {
+        element.addEventListener('touchmove', (event: any) => {
             let adjustment = startPos - event.touches[0].pageX;
             // If 'adjustment' is positive, user made a movement the right direction
             // else user made a movement in the left direction

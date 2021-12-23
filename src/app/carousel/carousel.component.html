@@ -10,12 +10,11 @@
         <div #content class="carousel-content">
             <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
         </div> 
-        <!-- <div class="scrolling-bar">
-            <div class="scrolling" [ngStyle]="{'width': percent + '%'}"></div>
-        </div>    -->
         <div class="scrolling-bar">
-            <!-- <div #progress class="progress" [ngStyle]="{'width': progressWidth + 'px'}"></div> -->
-            <div #progress class="progress"></div>
+            <div class="scrolling" [ngStyle]="{'width': progressBarWidth + '%'}"></div>
+        </div>   
+        <div class="scrolling-bar">
+            <div #progress class="progress" [ngStyle]="{'left': progressScrollLeft + 'px'}"></div>
         </div>              
     </div>
     <div class="carousel-control right">
