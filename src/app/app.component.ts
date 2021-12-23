@@ -72,7 +72,7 @@ export class AppComponent implements OnInit {
         let ipData = await this.getIPAddress();
         let locationResults!: PositionStack.Result;
         try {
-            locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {
+            locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.IP, {
                 ipAddress: ipData.ip
             });
         } catch (error: any) {
@@ -84,7 +84,7 @@ export class AppComponent implements OnInit {
         let longitude = initialLocation.longitude;
         let latitude = initialLocation.latitude;
 
-        let forecast = await this.getForecast(latitude, longitude);
+        let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
         this.dataStore.setInitialLocation(initialLocation);
 
@@ -100,10 +100,10 @@ export class AppComponent implements OnInit {
     }    
       
     async querySearch(searchQuery: string) {
-        let searchLocation = this.dataStore.currentLocation;
+        let searchLocation = this.dataStore.getCurrentLocation();
         if (this.locationApiAvailable && 
-            (this.dataStore.currentLocation == null || this.dataStore.lastSearchData.searchQuery != searchQuery)) {
-            let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
+            (this.dataStore.getCurrentLocation() == null || this.dataStore.lastSearchData.searchQuery != searchQuery)) {
+            let locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
             searchLocation = locationResults.data[0];
@@ -117,7 +117,7 @@ export class AppComponent implements OnInit {
         let longitude = searchLocation.longitude;
         let latitude = searchLocation.latitude;
 
-        let forecast = await this.getForecast(latitude, longitude);
+        let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
         this.dataStore.setCurrentForecastData({
             currentForecast: forecast.current,
@@ -133,21 +133,21 @@ export class AppComponent implements OnInit {
     }
 
     async gpsSearch(latitude: number, longitude: number) {   
-        let searchLocation = this.dataStore.currentLocation;     
+        let searchLocation = this.dataStore.getCurrentLocation();     
         if (this.locationApiAvailable && 
-            (this.dataStore.currentLocation == null || this.dataStore.lastSearchData.longitude != longitude || this.dataStore.lastSearchData.latitude != latitude)) {
+            (this.dataStore.getCurrentLocation() == null || this.dataStore.lastSearchData.longitude != longitude || this.dataStore.lastSearchData.latitude != latitude)) {
 
             this.dataStore.setLastSearchData({
                 searchQuery: ''
             });  
 
-            let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.GPS, {
+            let locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
             });
             searchLocation = locationResults.data[0];
         }
 
-        let forecast = await this.getForecast(latitude, longitude);
+        let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
         this.dataStore.setCurrentForecastData({
             currentForecast: forecast.current,
@@ -159,49 +159,6 @@ export class AppComponent implements OnInit {
             longitude,
             latitude,
         });               
-    }
-    
-    async getForecast(latitude: number, longitude: number) {
-        // Get current forecast
-        let current = await firstValueFrom(this.weatherBitApi.getCurrentForecast(latitude, longitude));
-        // console.log(current);
-        if (current.count == 0 || current.data.length == 0) {
-            throw new RuntimeError.ForecastError(`No current forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
-        }
-
-        // Get daily forecast
-        let daily = await firstValueFrom(this.weatherBitApi.getDailyForecast(latitude, longitude));
-
-        return {
-            current: current.data[0],
-            daily: daily.data
-        };
-    } 
-
-    async getForecastLocation(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
-        let observable!: Observable<PositionStack.Result>;
-        switch(type) {
-            case ForecastLocationSearch.Type.IP:
-                observable = this.positionStackApi.getReverseSearch(options.ipAddress || '');
-                break;
-            case ForecastLocationSearch.Type.SearchQuery:
-                observable = this.positionStackApi.getForwardSearch(options.searchQuery || '');              
-                break;
-            case ForecastLocationSearch.Type.GPS:
-                observable = this.positionStackApi.getReverseSearch(options.latitude || 0, options.longitude || 0);
-                break;
-            default:
-                throw new Error(`Unknown search type: ${type}`);
-                break;
-        }
-        let geocode = await firstValueFrom(observable);
-        // console.log(geocode);
-        if (geocode.error != null) {
-            throw new RuntimeError.ForecastLocationError(geocode.error.message, type);
-        }  else if (!geocode.data || geocode.data.length == 0) {
-            throw new RuntimeError.ForecastLocationError('No forecast location results returned', type);
-        }
-        return geocode;
     }
 
     async onSearchLocation(eventData: any) {
@@ -223,7 +180,7 @@ export class AppComponent implements OnInit {
                     throw new Error(`Unknown search type: ${type}`);
                     break;
             }
-            if (this.dataStore.currentLocation != null) {
+            if (this.dataStore.getCurrentLocation() != null) {
                 // console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {

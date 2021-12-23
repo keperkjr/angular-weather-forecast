@@ -7,6 +7,9 @@
 // ============================================================================
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom, Observable } from 'rxjs';
+import { RuntimeError } from '../models/errors';
+import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { PositionStack } from '../models/positionstack';
 import { WeatherBit } from '../models/weatherbit';
 
@@ -33,7 +36,23 @@ export class WeatherBitApiService extends ApiService {
         let url = `${this.baseUrl}/forecast/daily?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`;         
         // console.log(url);
         return this.http.get<WeatherBit.Daily.Result>(url);           
-    }          
+    } 
+    async getForecast(latitude: number, longitude: number) {
+        // Get current forecast
+        let current = await firstValueFrom(this.getCurrentForecast(latitude, longitude));
+        // console.log(current);
+        if (current.count == 0 || current.data.length == 0) {
+            throw new RuntimeError.ForecastError(`No current forecast results returned for latitude: ${latitude}, longitude: ${longitude}`);
+        }
+
+        // Get daily forecast
+        let daily = await firstValueFrom(this.getDailyForecast(latitude, longitude));
+
+        return {
+            current: current.data[0],
+            daily: daily.data
+        };
+    }              
 }
 
 @Injectable({
@@ -62,5 +81,31 @@ export class PositionStackApiService extends ApiService {
         let url = `${this.baseUrl}/reverse?access_key=${this.key}&query=${search}&limit=1`; 
         // console.log(url);
         return this.http.get<PositionStack.Result>(url);           
-    }      
+    }  
+
+    async getForecastLocation(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
+        let observable!: Observable<PositionStack.Result>;
+        switch(type) {
+            case ForecastLocationSearch.Type.IP:
+                observable = this.getReverseSearch(options.ipAddress || '');
+                break;
+            case ForecastLocationSearch.Type.SearchQuery:
+                observable = this.getForwardSearch(options.searchQuery || '');              
+                break;
+            case ForecastLocationSearch.Type.GPS:
+                observable = this.getReverseSearch(options.latitude || 0, options.longitude || 0);
+                break;
+            default:
+                throw new Error(`Unknown search type: ${type}`);
+                break;
+        }
+        let geocode = await firstValueFrom(observable);
+        // console.log(geocode);
+        if (geocode.error != null) {
+            throw new RuntimeError.ForecastLocationError(geocode.error.message, type);
+        }  else if (!geocode.data || geocode.data.length == 0) {
+            throw new RuntimeError.ForecastLocationError('No forecast location results returned', type);
+        }
+        return geocode;
+    }        
 }

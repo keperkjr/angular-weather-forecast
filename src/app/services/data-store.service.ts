@@ -3,13 +3,19 @@ import { PositionStack } from '../models/positionstack';
 import { WeatherBit } from '../models/weatherbit';
 
 interface IObjectKeys {
-    [key: string]: string | number | undefined;
+    [key: string]: any | undefined;
 }
   
-interface SearchData extends IObjectKeys {
+interface SearchData {
     searchQuery?: string;
     longitude?: number;
     latitude?: number;
+}
+
+interface ForecastData {
+    currentLocation: PositionStack.Location | any;
+    currentForecast: WeatherBit.Current.Forecast | any;
+    currentDailyForecast: WeatherBit.Daily.Forecast[];
 }
 
 @Injectable({
@@ -18,9 +24,6 @@ interface SearchData extends IObjectKeys {
 export class DataStoreService {
 
     initialLocation!: PositionStack.Location;
-    currentLocation!: PositionStack.Location;
-    currentForecast!: WeatherBit.Current.Forecast;
-    currentDailyForecast!: WeatherBit.Daily.Forecast[];
         
     baseUrl!: string;
     lastSearchData: SearchData = {
@@ -28,22 +31,42 @@ export class DataStoreService {
         longitude: 0,
         latitude: 0
     };
+
+    private forecastData: ForecastData = {
+        currentLocation!: undefined,
+        currentForecast!: undefined,
+        currentDailyForecast: []
+    };
         
     constructor() { }
+
+    getCurrentLocation(): PositionStack.Location {
+        return this.forecastData['currentLocation'];
+    }
+
+    getCurrentForecast(): WeatherBit.Current.Forecast {
+        return this.forecastData['currentForecast'];
+    }    
+
+    getCurrentDailyForecast(): WeatherBit.Daily.Forecast[] {
+        return this.forecastData['currentDailyForecast'];
+    }       
 
     setInitialLocation(data: any) {
         this.initialLocation = data;
     }
 
-    setCurrentForecastData(data: any) {
-        this.currentForecast = data.currentForecast;
-        this.currentDailyForecast = data.currentDailyForecast;
-        this.currentLocation = data.currentLocation;
+    setCurrentForecastData(data: ForecastData) { 
+        this.copyProps(data, this.forecastData);      
     }
 
     setLastSearchData(data: SearchData) {
-        for (let prop in data) {
-            this.lastSearchData[prop] = data[prop];
-        }
+        this.copyProps(data, this.lastSearchData);
+    }
+
+    copyProps(source: any, destination: any) {
+        for (let prop in source) {
+            destination[prop] = source[prop];
+        }        
     }
 }
