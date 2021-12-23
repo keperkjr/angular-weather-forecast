@@ -47,10 +47,10 @@ export class AppComponent implements OnInit {
         if (!this.debug) {
             this.isLoading = true;
             this.loadInitialForecast().then(() => {
-                console.log('Initial forecast loaded');
+                // console.log('Initial forecast loaded');
                 this.isLoading = false;
             }).catch((error) => {
-                console.log(error); 
+                // console.log(error); 
                 this.isLoading = false;              
             });
         } else {
@@ -67,7 +67,7 @@ export class AppComponent implements OnInit {
                 this.locationApiAvailable = false;
             }
             try {
-                console.log('Location api is unavailable, getting forecast from gps position', error);
+                // console.log('Location api is unavailable, getting forecast from gps position', error);
                 let position = await Utils.getCurrentPosition();
                 await this.gpsSearch(position.coords.latitude, position.coords.longitude);             
             } catch(error2) {
