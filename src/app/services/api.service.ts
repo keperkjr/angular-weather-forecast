@@ -26,12 +26,12 @@ export class WeatherBitApiService extends ApiService {
 
     getCurrentForecast(latitude: number, longitude: number) {
         let url = `${this.baseUrl}/current?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`; 
-        console.log(url);
+        // console.log(url);
         return this.http.get<WeatherBit.Current.Result>(url);           
     }  
     getDailyForecast(latitude: number, longitude: number) {
         let url = `${this.baseUrl}/forecast/daily?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`;         
-        console.log(url);
+        // console.log(url);
         return this.http.get<WeatherBit.Daily.Result>(url);           
     }          
 }
@@ -46,7 +46,7 @@ export class PositionStackApiService extends ApiService {
     getForwardSearch(search: string) {
         //&limit=1
         let url = `${this.baseUrl}/forward?access_key=${this.key}&query=${encodeURIComponent(search)}`; 
-        console.log(url);
+        // console.log(url);
         return this.http.get<PositionStack.Result>(url);           
     }
 
@@ -60,7 +60,7 @@ export class PositionStackApiService extends ApiService {
             search = `${param1},${param2}`;
         }
         let url = `${this.baseUrl}/reverse?access_key=${this.key}&query=${search}&limit=1`; 
-        console.log(url);
+        // console.log(url);
         return this.http.get<PositionStack.Result>(url);           
     }      
 }
