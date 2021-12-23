@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = true;
+    debug = false;
 
     isLoading = false;
 
@@ -43,7 +43,7 @@ export class AppComponent implements OnInit {
                 console.log('Initial forecast load complete');
                 this.isLoading = false;
             }).catch((error) => {
-                // console.log(error); 
+                console.log(error); 
                 this.isLoading = false;              
             });
         }
@@ -80,15 +80,19 @@ export class AppComponent implements OnInit {
             throw new RuntimeError.ForecastLocationError(message, ForecastLocationSearch.Type.IP);
         }
 
-        this.dataStore.initialLocation = locationResults.data[0];
-        let longitude = this.dataStore.initialLocation.longitude;
-        let latitude = this.dataStore.initialLocation.latitude;
+        let initialLocation = locationResults.data[0];
+        let longitude = initialLocation.longitude;
+        let latitude = initialLocation.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.dataStore.currentForecast = forecast.current;
-        this.dataStore.currentDailyForecast = forecast.daily
-        this.dataStore.currentLocation = this.dataStore.initialLocation;
+        this.dataStore.setInitialLocation(initialLocation);
+
+        this.dataStore.setCurrentForecastData({
+            currentForecast: forecast.current,
+            currentDailyForecast: forecast.daily,
+            currentLocation: initialLocation,
+        });
     }
 
     async getIPAddress(): Promise<any> {
@@ -115,20 +119,27 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.dataStore.currentForecast = forecast.current;  
-        this.dataStore.currentDailyForecast = forecast.daily; 
-        this.dataStore.currentLocation = searchLocation;
+        this.dataStore.setCurrentForecastData({
+            currentForecast: forecast.current,
+            currentDailyForecast: forecast.daily,
+            currentLocation: searchLocation,
+        });
 
-        this.dataStore.lastSearchData.longitude = longitude;
-        this.dataStore.lastSearchData.latitude = latitude;
-        this.dataStore.lastSearchData.searchQuery = searchQuery;        
+        this.dataStore.setLastSearchData({
+            longitude,
+            latitude,
+            searchQuery
+        });      
     }
 
     async gpsSearch(latitude: number, longitude: number) {   
         let searchLocation = this.dataStore.currentLocation;     
         if (this.locationApiAvailable && 
             (this.dataStore.currentLocation == null || this.dataStore.lastSearchData.longitude != longitude || this.dataStore.lastSearchData.latitude != latitude)) {
-            this.dataStore.lastSearchData.searchQuery = '';
+
+            this.dataStore.setLastSearchData({
+                searchQuery: ''
+            });  
 
             let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
@@ -138,12 +149,16 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.dataStore.currentForecast = forecast.current;
-        this.dataStore.currentDailyForecast = forecast.daily; 
-        this.dataStore.currentLocation = searchLocation;
-
-        this.dataStore.lastSearchData.longitude = longitude;
-        this.dataStore.lastSearchData.latitude = latitude;        
+        this.dataStore.setCurrentForecastData({
+            currentForecast: forecast.current,
+            currentDailyForecast: forecast.daily,
+            currentLocation: searchLocation,
+        });
+ 
+        this.dataStore.setLastSearchData({
+            longitude,
+            latitude,
+        });               
     }
     
     async getForecast(latitude: number, longitude: number) {
