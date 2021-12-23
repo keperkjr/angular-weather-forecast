@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  carousel.component.ts
+//    Description: Carousel typescript
+// ============================================================================
 import { Component, OnInit, ViewChild, ElementRef, ContentChild, TemplateRef, Input } from '@angular/core';
 
 @Component({
@@ -33,7 +40,6 @@ export class CarouselComponent implements OnInit {
     }
 
     ngAfterViewInit(): void {
-        this.adjustScrollPosition(0);
         this.addTouchScroll();
 
         window.addEventListener('resize', () => {

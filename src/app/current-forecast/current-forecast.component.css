@@ -1,3 +1,12 @@
+/*
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  current-forecast.component.css
+//    Description: Current forecast css
+// ============================================================================
+*/
 .current-forecast-container {
     width: 50%;
     display: inline-block;
@@ -17,7 +26,7 @@
     line-height: 1.07; 
     display: inline-block;   
 }
-.after-temp {
+.temp-scale {
     font-size: 24px;
     line-height: 1.28;
     margin-left: -24px;

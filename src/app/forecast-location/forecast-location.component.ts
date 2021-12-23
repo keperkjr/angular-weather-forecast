@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  forecast-location.component.ts
+//    Description: Forecast location typescript
+// ============================================================================
 import { Component, Input, OnInit } from '@angular/core';
 import { PositionStack } from '../models/positionstack';
 

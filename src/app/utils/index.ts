@@ -1,3 +1,14 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  index.ts
+//    Description: General utility functions
+
+import { RuntimeError } from "../models/errors";
+import { ForecastLocationSearch } from "../models/forecastlocationsearch";
+
+// ============================================================================
 export namespace Utils {
     /**
     * FUNCTION: getCurrentPosition
@@ -43,23 +54,56 @@ export namespace Utils {
         return result;
     } 
 
-    export function getWeekdayName(date: Date, locale: string = 'en-US') {
+    export function getWeekdayName(date: Date, locale: string = 'default') {
         return date.toLocaleDateString(locale, { weekday: 'long' });        
     } 
 
-    export function getMonthName(date: Date, locale: string = 'en-US') {
+    export function getMonthName(date: Date, locale: string = 'default') {
         return date.toLocaleDateString(locale, { month: 'long' });        
     }     
     
-    export function getDateString(date: Date, locale: string = 'en-US') {
+    export function getDateString(date: Date, locale: string = 'default') {
         return date.toLocaleDateString(locale);
     }
 
-    export function getTimeString(date: Date, locale: string = 'en-US') {
+    export function getTimeString(date: Date, locale: string = 'default') {
         return date.toLocaleString(locale, { hour: 'numeric', minute: 'numeric', hour12: true });
     }     
     
     export function getDateTimeString(date: Date) {
         return `${getDateString(date)}, ${getTimeString(date)}`;
+    }
+
+    export function displayError(error: any) {
+        console.log(error);
+        if (error instanceof GeolocationPositionError) {
+            switch (error.code) {
+                case GeolocationPositionError.PERMISSION_DENIED:
+                    alert(`Location access is denied. Please allow access and try again!`);
+                    break;
+                case GeolocationPositionError.POSITION_UNAVAILABLE:
+                    alert(`Location position is unavailable. Please allow access and try again!`);              
+                    break;
+                default:
+                    alert(`Location could not be detected. Please try again!`);
+            }
+        } else if (error instanceof RuntimeError.ForecastLocationError) {
+            switch (error.code) {
+                case ForecastLocationSearch.Type.IP:                    
+                    break;
+                case ForecastLocationSearch.Type.SearchQuery:
+                    alert(`Unable to display forecast. Location could not be determined from the entered search term. Please enter another search term and try again!`);               
+                    break;
+                case ForecastLocationSearch.Type.GPS:
+                    alert(`Unable to display forecast. Location could not be detected from your current position. Please try again!`);
+                    break;
+                default:
+                    alert(`Unable to display forecast. Location could not be detected. Please try again!`);
+            }
+        } else if (error instanceof RuntimeError.ForecastError) {
+            alert(`There currently is no weather forecast information available for the selected location. Please try a different location!`);
+        } else {
+            alert(`Unable to display forecast. Please try again!`);
+        }
     }
 }

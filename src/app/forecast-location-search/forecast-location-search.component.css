@@ -1,3 +1,12 @@
+/*
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  forecast-location-search.css
+//    Description: Forecast location search css
+// ============================================================================
+*/
 .location-search-container {
     width: 500px;
     overflow: hidden;
@@ -9,7 +18,6 @@
     background-color: #eee;
     padding: 8px;
 }
-
 .btn-location-search, .btn-gps {
     vertical-align: top;
     background-color: darkblue;

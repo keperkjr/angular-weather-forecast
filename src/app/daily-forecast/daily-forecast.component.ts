@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  daily-forecast.component.ts
+//    Description: Daily forecast typescript
+// ============================================================================
 import { Component, Input, OnInit } from '@angular/core';
 import { WeatherBit } from '../models/weatherbit';
 import { Utils } from '../utils';
@@ -36,7 +43,7 @@ export class DailyForecastComponent implements OnInit {
             return 'Today';
         }
 
-        return date.toLocaleString('en-US', {
+        return date.toLocaleString('default', {
             month: 'short',
             day  : '2-digit',
             weekday: 'short',

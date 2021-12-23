@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  app.component.ts
+//    Description: App typescript
+// ============================================================================
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -51,9 +58,10 @@ export class AppComponent implements OnInit {
         }
 
         if (this.positionStackApi.key.length == 0) {
-            alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain a key, and then set it within the PositionStackApiService class');
-        } else if (this.weatherBitApi.key.length == 0) {
-            alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain a key, and then set it within the WeatherBitApiService class');
+            alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain your own api key (free), and then set it within the PositionStackApiService class in the app/services folder');
+        } 
+        if (this.weatherBitApi.key.length == 0) {
+            alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain your own api key (free), and then set it within the WeatherBitApiService class in the app/services folder');
         }
     }
 
@@ -69,7 +77,7 @@ export class AppComponent implements OnInit {
                 let position = await Utils.getCurrentPosition();
                 await this.gpsSearch(position.coords.latitude, position.coords.longitude);             
             } catch(error2) {
-                this.displayError(error2);             
+                Utils.displayError(error2);             
             }
         }
     }
@@ -202,28 +210,6 @@ export class AppComponent implements OnInit {
         return geocode;
     }
 
-    displayError(error: any) {
-        console.log(error);
-        if (error instanceof RuntimeError.ForecastLocationError) {
-            switch(error.code) {
-                case ForecastLocationSearch.Type.IP:                    
-                    break;
-                case ForecastLocationSearch.Type.SearchQuery:
-                    alert(`Unable to display forecast. Location could not be determined from the entered search term. Please enter another search term and try again!`);               
-                    break;
-                case ForecastLocationSearch.Type.GPS:
-                    alert(`Unable to display forecast. Location could not be detected from your current position. Please try again!`);
-                    break;
-                default:
-                    alert(`Unable to display forecast. Location could not be detected. Please try again!`);
-            }
-        } else if (error instanceof RuntimeError.ForecastError) {
-            alert(`There currently is no weather forecast information available for the selected location. Please try a different location!`);
-        } else {
-            alert(`Unable to display forecast. Please try again!`);
-        }
-    }
-
     async onSearchLocation(eventData: any) {
         console.log(eventData);
         this.isLoading = true;
@@ -244,7 +230,7 @@ export class AppComponent implements OnInit {
                 console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {
-            this.displayError(error);
+            Utils.displayError(error);
         } finally {
             this.isLoading = false;
         }

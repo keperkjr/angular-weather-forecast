@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  current-forecast.component.ts
+//    Description: Current forecast typescript
+// ============================================================================
 import { Component, Input, OnInit } from '@angular/core';
 import { WeatherBit } from '../models/weatherbit';
 import { Utils } from '../utils'

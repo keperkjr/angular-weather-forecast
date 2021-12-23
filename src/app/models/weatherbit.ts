@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  weatherbit.ts
+//    Description: Models for the WeatherBit api
+// ============================================================================
 export namespace WeatherBit {   
     export namespace Current {      
         export interface Result {

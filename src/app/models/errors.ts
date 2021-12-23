@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  errors.ts
+//    Description: Custom errors classes
+// ============================================================================
 import { ForecastLocationSearch } from './forecastlocationsearch';
 
 export namespace RuntimeError {

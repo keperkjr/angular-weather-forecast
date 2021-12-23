@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  positionstack.ts
+//    Description: Models for the PositionStack Api
+// ============================================================================
 export namespace PositionStack {
     export interface Result {
         data: Location[]

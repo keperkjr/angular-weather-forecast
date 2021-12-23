@@ -1,3 +1,12 @@
+<!--
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  forecast-location.component.html
+//    Description: Forecast location html
+// ============================================================================
+-->
 <div class="location">
     <span class="city"> 
         {{ getCity() }}
@@ -6,6 +15,6 @@
         </span>
     </span>
     <span class="region">
-         <span *ngIf="location.region">{{ location.region }},</span> {{ location.country}}
+         <span *ngIf="location.region">{{ location.region }},</span> {{ location.country }}
     </span>
 </div>
