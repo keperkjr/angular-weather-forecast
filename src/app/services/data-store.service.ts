@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
+import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { PositionStack } from '../models/positionstack';
 import { WeatherBit } from '../models/weatherbit';
 
-interface IObjectKeys {
-    [key: string]: any | undefined;
-}
-  
 interface SearchData {
     searchQuery?: string;
     longitude?: number;
@@ -41,15 +38,15 @@ export class DataStoreService {
     constructor() { }
 
     getCurrentLocation(): PositionStack.Location {
-        return this.forecastData['currentLocation'];
+        return this.forecastData.currentLocation;
     }
 
     getCurrentForecast(): WeatherBit.Current.Forecast {
-        return this.forecastData['currentForecast'];
+        return this.forecastData.currentForecast;
     }    
 
     getCurrentDailyForecast(): WeatherBit.Daily.Forecast[] {
-        return this.forecastData['currentDailyForecast'];
+        return this.forecastData.currentDailyForecast;
     }       
 
     setInitialLocation(data: any) {
@@ -62,6 +59,19 @@ export class DataStoreService {
 
     setLastSearchData(data: SearchData) {
         this.copyProps(data, this.lastSearchData);
+    }
+
+    lastSearchMatches(type: ForecastLocationSearch.Type, options: any) {
+
+        console.log('this.lastSearchData', this.lastSearchData);
+        console.log('options', options);
+                
+        switch (type) {
+            case ForecastLocationSearch.Type.GPS:
+                return this.lastSearchData.longitude == options.longitude && this.lastSearchData.latitude == options.latitude;
+                break;
+        }
+        return true;
     }
 
     copyProps(source: any, destination: any) {

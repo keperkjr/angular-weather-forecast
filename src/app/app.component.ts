@@ -25,7 +25,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = false;
+    debug = true;
 
     isLoading = false;
 
@@ -134,9 +134,9 @@ export class AppComponent implements OnInit {
 
     async gpsSearch(latitude: number, longitude: number) {   
         let searchLocation = this.dataStore.getCurrentLocation();     
-        if (this.locationApiAvailable && 
-            (this.dataStore.getCurrentLocation() == null || this.dataStore.lastSearchData.longitude != longitude || this.dataStore.lastSearchData.latitude != latitude)) {
-
+        if (this.locationApiAvailable &&
+            (searchLocation == null || !this.dataStore.lastSearchMatches(ForecastLocationSearch.Type.GPS, {latitude, longitude}))) {
+                
             this.dataStore.setLastSearchData({
                 searchQuery: ''
             });  
