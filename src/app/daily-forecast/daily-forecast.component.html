@@ -18,20 +18,20 @@
         </div>
     </section>
     <section class="daily-details-section">
-        <div>
-            <span title="Chance of rain">☂️ </span>
+        <div title="Chance of precipitation (rain / snow)">
+            <span>☂️ </span>
             <span class="details-value">{{ forecast.pop }}%</span>
         </div>
-        <div>
-            <span title="Humidity">😰 </span>
+        <div title="Humidity">
+            <span>😰 </span>
             <span class="details-value">{{ forecast.rh }}%</span>
         </div>  
-        <div>
-            <span title="UV Index">🕶 </span>
+        <div title="UV Index">
+            <span>🕶 </span>
             <span class="details-value" [ngClass]="getUVIndexCss()">{{ getUVIndexDescription() }}</span>
         </div>         
-        <div>
-            <span title="Wind speed / direction">💨 </span>
+        <div title="Wind speed / direction">
+            <span>💨 </span>
             <span class="details-value">{{ forecast.wind_spd }} mph {{ forecast.wind_cdir }}</span>
         </div>                  
     </section>           

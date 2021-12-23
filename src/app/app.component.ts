@@ -49,6 +49,12 @@ export class AppComponent implements OnInit {
         } else {
             this.locationApiAvailable = true;
         }
+
+        if (this.positionStackApi.key.length == 0) {
+            alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain a key, and then set it within the PositionStackApiService class');
+        } else if (this.weatherBitApi.key.length == 0) {
+            alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain a key, and then set it within the WeatherBitApiService class');
+        }
     }
 
     async loadInitialForecast() {
