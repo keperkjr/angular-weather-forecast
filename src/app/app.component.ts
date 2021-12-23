@@ -88,7 +88,7 @@ export class AppComponent implements OnInit {
 
         this.dataStore.setInitialLocation(initialLocation);
 
-        this.dataStore.setCurrentForecastData({
+        this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
             currentLocation: initialLocation,
@@ -102,15 +102,16 @@ export class AppComponent implements OnInit {
     async querySearch(searchQuery: string) {
         let searchLocation = this.dataStore.getCurrentLocation();
         if (this.locationApiAvailable && 
-            (this.dataStore.getCurrentLocation() == null || this.dataStore.lastSearchData.searchQuery != searchQuery)) {
+            (searchLocation == null || !this.dataStore.lastSearchMatches(ForecastLocationSearch.Type.SearchQuery, {searchQuery}))) {
+            
             let locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
             searchLocation = locationResults.data[0];
 
             // Get the location that is the shortest distance from the user
-            if (this.dataStore.initialLocation != null) {
-                searchLocation = PositionStack.getNearestLocation(this.dataStore.initialLocation.latitude, this.dataStore.initialLocation.longitude, locationResults);
+            if (this.dataStore.getInitialLocation() != null) {
+                searchLocation = PositionStack.getNearestLocation(this.dataStore.getInitialLocation().latitude, this.dataStore.getInitialLocation().longitude, locationResults);
             }
         }
 
@@ -119,7 +120,7 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
-        this.dataStore.setCurrentForecastData({
+        this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
             currentLocation: searchLocation,
@@ -149,7 +150,7 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
-        this.dataStore.setCurrentForecastData({
+        this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
             currentLocation: searchLocation,

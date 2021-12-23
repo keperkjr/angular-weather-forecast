@@ -20,7 +20,7 @@ interface ForecastData {
 })
 export class DataStoreService {
 
-    initialLocation!: PositionStack.Location;
+    private initialLocation!: PositionStack.Location;
         
     baseUrl!: string;
     lastSearchData: SearchData = {
@@ -37,6 +37,10 @@ export class DataStoreService {
         
     constructor() { }
 
+    getInitialLocation(): PositionStack.Location {
+        return this.initialLocation;
+    }
+    
     getCurrentLocation(): PositionStack.Location {
         return this.forecastData.currentLocation;
     }
@@ -53,7 +57,7 @@ export class DataStoreService {
         this.initialLocation = data;
     }
 
-    setCurrentForecastData(data: ForecastData) { 
+    setCurrentForecast(data: ForecastData) { 
         this.copyProps(data, this.forecastData);      
     }
 
@@ -62,14 +66,13 @@ export class DataStoreService {
     }
 
     lastSearchMatches(type: ForecastLocationSearch.Type, options: any) {
-
-        console.log('this.lastSearchData', this.lastSearchData);
-        console.log('options', options);
-                
         switch (type) {
             case ForecastLocationSearch.Type.GPS:
                 return this.lastSearchData.longitude == options.longitude && this.lastSearchData.latitude == options.latitude;
                 break;
+            case ForecastLocationSearch.Type.SearchQuery:
+                return this.lastSearchData.searchQuery == options.searchQuery;
+                break;                
         }
         return true;
     }
