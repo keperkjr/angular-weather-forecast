@@ -48,10 +48,12 @@ export class CarouselComponent implements OnInit {
     }
 
     scrollLeft() {
+        this.enableScrollBehavior();
         this.adjustScrollPosition(-this.buttonScrollWidth);
     }
 
     scrollRight() {
+        this.enableScrollBehavior();
         this.adjustScrollPosition(this.buttonScrollWidth);
     } 
     
@@ -74,6 +76,7 @@ export class CarouselComponent implements OnInit {
         let element = this.content.nativeElement;
 
         element.addEventListener('touchstart', (event: any) => {
+            this.disableScrollBehavior();
             startPos = event.touches[0].pageX;
         });
 
@@ -81,7 +84,16 @@ export class CarouselComponent implements OnInit {
             let adjustment = startPos - event.touches[0].pageX;
             // If 'adjustment' is positive, user made a movement the right direction
             // else user made a movement in the left direction
-            this.adjustScrollPosition(adjustment);              
+            this.adjustScrollPosition(adjustment);                          
         });
-    }   
+    } 
+
+    disableScrollBehavior() {
+        this.content.nativeElement.style['scroll-behavior'] = 'unset';
+    }
+
+    enableScrollBehavior() {
+        this.content.nativeElement.style['scroll-behavior'] = null;
+    }
+
 }
