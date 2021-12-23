@@ -76,7 +76,7 @@ export namespace Utils {
     }
 
     export function displayError(error: any) {
-        // console.log(error);
+        console.log(error);
         if (error instanceof GeolocationPositionError) {
             switch (error.code) {
                 case GeolocationPositionError.PERMISSION_DENIED:
@@ -106,5 +106,17 @@ export namespace Utils {
         } else {
             alert(`Unable to display forecast. Please try again!`);
         }
+    }
+
+    export function isLocalNetwork(hostname = window.location.hostname) {
+        return (
+            (['localhost', '127.0.0.1', '', '::1'].includes(hostname))
+            || (hostname.startsWith('192.168.'))
+            || (hostname.startsWith('10.0.'))
+            || (hostname.endsWith('.local'))
+          )        
+    }
+    export function isSecureConnection() {
+        return window.location.protocol === 'https:';
     }
 }

@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = false;
+    debug = true;
 
     isLoading = false;
     initialLocation!: PositionStack.Location;
@@ -47,15 +47,14 @@ export class AppComponent implements OnInit {
         if (!this.debug) {
             this.isLoading = true;
             this.loadInitialForecast().then(() => {
-                // console.log('Initial forecast loaded');
+                console.log('Initial forecast load complete');
                 this.isLoading = false;
             }).catch((error) => {
                 // console.log(error); 
                 this.isLoading = false;              
             });
-        } else {
-            this.locationApiAvailable = true;
         }
+        
         this.showAPINotice();
     }
 
@@ -203,6 +202,9 @@ export class AppComponent implements OnInit {
         let type = eventData.type;
         try {
             switch(type) {
+                case ForecastLocationSearch.Type.IP:
+                    await this.ipAddressSearch();
+                    break;                
                 case ForecastLocationSearch.Type.SearchQuery:
                     await this.querySearch(eventData.searchQuery);
                     break;

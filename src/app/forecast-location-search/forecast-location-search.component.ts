@@ -60,8 +60,17 @@ export class ForecastLocationSearchComponent implements OnInit {
             eventData.type = ForecastLocationSearch.Type.GPS;
 
             this.searchLocationEmitter.emit(eventData);
-        } catch (error) {
-            Utils.displayError(error);
+        } catch (error: any) {
+            if (error.code 
+                && (error.code == GeolocationPositionError.PERMISSION_DENIED 
+                    || error.code == GeolocationPositionError.POSITION_UNAVAILABLE) 
+                && (!Utils.isLocalNetwork() && !Utils.isSecureConnection())) {
+                    let eventData = this.newEventData();
+                    eventData.type = ForecastLocationSearch.Type.IP;        
+                    this.searchLocationEmitter.emit(eventData);
+            } else {
+                Utils.displayError(error);            
+            }
         }
     }    
 }
