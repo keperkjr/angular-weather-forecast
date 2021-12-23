@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = false;
+    debug = true;
 
     isLoading = false;
     initialLocation!: PositionStack.Location;
