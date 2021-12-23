@@ -5,6 +5,7 @@
 //    File:  positionstack.ts
 //    Description: Models for the PositionStack Api
 // ============================================================================
+import { Utils } from "../utils";
 export namespace PositionStack {
     export interface Result {
         data: Location[]
@@ -36,4 +37,17 @@ export namespace PositionStack {
         code: string
         message: string
       } 
+
+      export function getNearestLocation(latitude: number, longitude: number, locationResults: PositionStack.Result) {
+        let nearestDistance = Number.MAX_VALUE;
+        let nearestLocation!: PositionStack.Location;
+        for (let location of locationResults.data) {
+            let distance = Utils.getDistance(latitude, longitude, location.latitude, location.longitude);
+            if (distance < nearestDistance) {
+                nearestLocation = location;
+                nearestDistance = distance;
+            }
+        }
+        return nearestLocation;
+    }       
 }

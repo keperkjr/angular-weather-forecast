@@ -102,19 +102,6 @@ export class AppComponent implements OnInit {
     async getIPAddress(): Promise<any> {
         return firstValueFrom(this.http.get("http://api.ipify.org/?format=json"));
     }    
-
-    getNearestLocation(latitude: number, longitude: number, locationResults: PositionStack.Result) {
-        let nearestDistance = Number.MAX_VALUE;
-        let nearestLocation!: PositionStack.Location;
-        for (let location of locationResults.data) {
-            let distance = Utils.getDistance(latitude, longitude, location.latitude, location.longitude);
-            if (distance < nearestDistance) {
-                nearestLocation = location;
-                nearestDistance = distance;
-            }
-        }
-        return nearestLocation;
-    }  
       
     async querySearch(searchQuery: string) {
         let searchLocation = this.currentLocation;
@@ -127,7 +114,7 @@ export class AppComponent implements OnInit {
 
             // Get the location that is the shortest distance from the user
             if (this.initialLocation != null) {
-                searchLocation = this.getNearestLocation(this.initialLocation.latitude, this.initialLocation.longitude, locationResults);
+                searchLocation = PositionStack.getNearestLocation(this.initialLocation.latitude, this.initialLocation.longitude, locationResults);
             }
         }
 
