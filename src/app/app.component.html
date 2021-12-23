@@ -41,8 +41,8 @@
 
     <ng-template #notLoading>
         <section class="forecast-container">
-            <app-forecast-location *ngIf="dataStore.getCurrentLocation()"
-                [location]="dataStore.getCurrentLocation()"
+            <app-forecast-location *ngIf="dataStore.getCurrentForecastLocation()"
+                [location]="dataStore.getCurrentForecastLocation()"
             >
             </app-forecast-location>
             <div class="current-forecast-title">

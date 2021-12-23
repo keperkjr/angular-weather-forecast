@@ -51,56 +51,78 @@ export class AppComponent implements OnInit {
         this.showAPINotice();
     }
 
+    async getIPAddress(): Promise<any> {
+        return firstValueFrom(this.http.get("https://api.ipify.org/?format=json"));
+    }
+
     async loadInitialForecast() {
         try {
             await this.ipAddressSearch();
         } catch (error) {
             if (error instanceof RuntimeError.ForecastLocationError) {
                 this.locationApiAvailable = false;
-            }
-            try {
-                // console.log('Location api is unavailable, getting forecast from gps position', error);
-                let position = await Utils.getCurrentPosition();
-                await this.gpsSearch(position.coords.latitude, position.coords.longitude);             
-            } catch(error2) {
-                Utils.displayError(error2);             
+                console.log('Location api is unavailable, getting forecast from gps position');
+
+                try {
+                    // console.log(error);
+                    console.log('Location api is unavailable, getting forecast from gps position');
+                    let position = await Utils.getCurrentPosition();
+                    await this.gpsSearch(position.coords.latitude, position.coords.longitude);             
+                } catch(error2) {
+                    Utils.displayError(error2);             
+                }                
+            } else if (error instanceof RuntimeError.ForecastError) {
+                console.log('Weather api is unavailable');
+                Utils.displayError(error);
+            } else {
+                Utils.displayError(error);
             }
         }
     }
 
     async ipAddressSearch() {
+        let searchLocation = this.dataStore.getIPAddressLocation();
+        
         let ipData = await this.getIPAddress();
-        let locationResults!: PositionStack.Result;
-        try {
-            locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.IP, {
-                ipAddress: ipData.ip
-            });
-        } catch (error: any) {
-            let message = error.message ? error.message : error;
-            throw new RuntimeError.ForecastLocationError(message, ForecastLocationSearch.Type.IP);
+        let ipAddress = ipData.ip;
+
+        if (searchLocation == null || !this.dataStore.lastSearchMatches(ForecastLocationSearch.Type.IP, {ipAddress})) {
+            try {
+                let locationResults = await this.positionStackApi.getForecastLocation(ForecastLocationSearch.Type.IP, {
+                    ipAddress
+                });
+                searchLocation = locationResults.data[0];
+            } catch (error: any) {
+                let message = error.message ? error.message : error;
+                throw new RuntimeError.ForecastLocationError(message, ForecastLocationSearch.Type.IP);
+            }
         }
 
-        let initialLocation = locationResults.data[0];
-        let longitude = initialLocation.longitude;
-        let latitude = initialLocation.latitude;
+        let forecast: any
+        try {
+            forecast = await this.weatherBitApi.getForecast(searchLocation.latitude, searchLocation.longitude);
+        } catch (error: any) {
+            let message = error.message ? error.message : error;
+            throw new RuntimeError.ForecastError(message);
+        }
 
-        let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
-
-        this.dataStore.setInitialLocation(initialLocation);
+        this.dataStore.setIPAddressLocation(searchLocation);
 
         this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
-            currentLocation: initialLocation,
+            currentForecastLocation: searchLocation,
         });
-    }
 
-    async getIPAddress(): Promise<any> {
-        return firstValueFrom(this.http.get("https://api.ipify.org/?format=json"));
+        this.dataStore.updateLastSearchData({
+            longitude: searchLocation.longitude,
+            latitude: searchLocation.latitude,            
+            ipAddress,
+        });         
     }    
       
     async querySearch(searchQuery: string) {
-        let searchLocation = this.dataStore.getCurrentLocation();
+        let searchLocation = this.dataStore.getCurrentForecastLocation();
         if (this.locationApiAvailable && 
             (searchLocation == null || !this.dataStore.lastSearchMatches(ForecastLocationSearch.Type.SearchQuery, {searchQuery}))) {
             
@@ -110,35 +132,32 @@ export class AppComponent implements OnInit {
             searchLocation = locationResults.data[0];
 
             // Get the location that is the shortest distance from the user
-            if (this.dataStore.getInitialLocation() != null) {
-                searchLocation = PositionStack.getNearestLocation(this.dataStore.getInitialLocation().latitude, this.dataStore.getInitialLocation().longitude, locationResults);
+            if (this.dataStore.getIPAddressLocation() != null) {
+                searchLocation = PositionStack.getNearestLocation(this.dataStore.getIPAddressLocation().latitude, this.dataStore.getIPAddressLocation().longitude, locationResults);
             }
         }
-
-        let longitude = searchLocation.longitude;
-        let latitude = searchLocation.latitude;
-
-        let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
+        
+        let forecast = await this.weatherBitApi.getForecast(searchLocation.latitude, searchLocation.longitude);
 
         this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
-            currentLocation: searchLocation,
+            currentForecastLocation: searchLocation,
         });
 
-        this.dataStore.setLastSearchData({
-            longitude,
-            latitude,
+        this.dataStore.updateLastSearchData({
+            longitude: searchLocation.longitude,
+            latitude: searchLocation.latitude,
             searchQuery
         });      
     }
 
     async gpsSearch(latitude: number, longitude: number) {   
-        let searchLocation = this.dataStore.getCurrentLocation();     
+        let searchLocation = this.dataStore.getCurrentForecastLocation();     
         if (this.locationApiAvailable &&
             (searchLocation == null || !this.dataStore.lastSearchMatches(ForecastLocationSearch.Type.GPS, {latitude, longitude}))) {
                 
-            this.dataStore.setLastSearchData({
+            this.dataStore.updateLastSearchData({
                 searchQuery: ''
             });  
 
@@ -153,10 +172,10 @@ export class AppComponent implements OnInit {
         this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
-            currentLocation: searchLocation,
+            currentForecastLocation: searchLocation,
         });
  
-        this.dataStore.setLastSearchData({
+        this.dataStore.updateLastSearchData({
             longitude,
             latitude,
         });               
@@ -181,7 +200,7 @@ export class AppComponent implements OnInit {
                     throw new Error(`Unknown search type: ${type}`);
                     break;
             }
-            if (this.dataStore.getCurrentLocation() != null) {
+            if (this.dataStore.getCurrentForecastLocation() != null) {
                 // console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {

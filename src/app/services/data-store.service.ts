@@ -3,14 +3,8 @@ import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { PositionStack } from '../models/positionstack';
 import { WeatherBit } from '../models/weatherbit';
 
-interface SearchData {
-    searchQuery?: string;
-    longitude?: number;
-    latitude?: number;
-}
-
 interface ForecastData {
-    currentLocation: PositionStack.Location | any;
+    currentForecastLocation: PositionStack.Location | any;
     currentForecast: WeatherBit.Current.Forecast | any;
     currentDailyForecast: WeatherBit.Daily.Forecast[];
 }
@@ -20,29 +14,30 @@ interface ForecastData {
 })
 export class DataStoreService {
 
-    private initialLocation!: PositionStack.Location;
+    private ipAddressLocation!: PositionStack.Location;
         
     baseUrl!: string;
-    lastSearchData: SearchData = {
+    lastSearchData: ForecastLocationSearch.Options = {
         searchQuery: '',
         longitude: 0,
-        latitude: 0
+        latitude: 0,
+        ipAddress: ''
     };
 
     private forecastData: ForecastData = {
-        currentLocation!: undefined,
+        currentForecastLocation!: undefined,
         currentForecast!: undefined,
         currentDailyForecast: []
     };
         
     constructor() { }
 
-    getInitialLocation(): PositionStack.Location {
-        return this.initialLocation;
+    getIPAddressLocation(): PositionStack.Location {
+        return this.ipAddressLocation;
     }
     
-    getCurrentLocation(): PositionStack.Location {
-        return this.forecastData.currentLocation;
+    getCurrentForecastLocation(): PositionStack.Location {
+        return this.forecastData.currentForecastLocation;
     }
 
     getCurrentForecast(): WeatherBit.Current.Forecast {
@@ -53,20 +48,23 @@ export class DataStoreService {
         return this.forecastData.currentDailyForecast;
     }       
 
-    setInitialLocation(data: any) {
-        this.initialLocation = data;
+    setIPAddressLocation(data: PositionStack.Location) {
+        this.ipAddressLocation = data;
     }
 
     setCurrentForecast(data: ForecastData) { 
         this.copyProps(data, this.forecastData);      
     }
 
-    setLastSearchData(data: SearchData) {
+    updateLastSearchData(data: ForecastLocationSearch.Options) {
         this.copyProps(data, this.lastSearchData);
     }
 
-    lastSearchMatches(type: ForecastLocationSearch.Type, options: any) {
+    lastSearchMatches(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
         switch (type) {
+            case ForecastLocationSearch.Type.IP:
+                return this.lastSearchData.ipAddress == options.ipAddress;
+                break;            
             case ForecastLocationSearch.Type.GPS:
                 return this.lastSearchData.longitude == options.longitude && this.lastSearchData.latitude == options.latitude;
                 break;
