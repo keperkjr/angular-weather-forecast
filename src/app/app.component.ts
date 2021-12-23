@@ -24,7 +24,7 @@ export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     locationApiAvailable = true;
 
-    debug = true;
+    debug = false;
 
     isLoading = false;
     initialLocation!: PositionStack.Location;
@@ -56,13 +56,7 @@ export class AppComponent implements OnInit {
         } else {
             this.locationApiAvailable = true;
         }
-
-        if (this.positionStackApi.key.length == 0) {
-            alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain your own api key (free), and then set it within the PositionStackApiService class in the app/services folder');
-        } 
-        if (this.weatherBitApi.key.length == 0) {
-            alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain your own api key (free), and then set it within the WeatherBitApiService class in the app/services folder');
-        }
+        this.showAPINotice();
     }
 
     async loadInitialForecast() {
@@ -84,9 +78,15 @@ export class AppComponent implements OnInit {
 
     async ipAddressSearch() {
         let ipData = await this.getIPAddress();
-        let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {
-            ipAddress: ipData.ip
-        });
+        let locationResults!: PositionStack.Result;
+        try {
+            locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.IP, {
+                ipAddress: ipData.ip
+            });
+        } catch (error: any) {
+            let message = error.message ? error.message : error;
+            throw new RuntimeError.ForecastLocationError(message, ForecastLocationSearch.Type.IP);
+        }
 
         this.initialLocation = locationResults.data[0];
         let longitude = this.initialLocation.longitude;
@@ -218,8 +218,18 @@ export class AppComponent implements OnInit {
             }
         } catch (error) {
             Utils.displayError(error);
+            this.showAPINotice();
         } finally {
             this.isLoading = false;
         }
-    }    
+    } 
+
+    showAPINotice() {
+        if (this.positionStackApi.key.length == 0) {
+            alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain your own free api key, and then set it within the PositionStackApiService class in the app/services folder');
+        } 
+        if (this.weatherBitApi.key.length == 0) {
+            alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain your own free api key, and then set it within the WeatherBitApiService class in the app/services folder');
+        }
+    }   
 }

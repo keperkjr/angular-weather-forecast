@@ -22,7 +22,7 @@ export class ApiService {
 })
 export class WeatherBitApiService extends ApiService {
     baseUrl = 'https://api.weatherbit.io/v2.0';
-    key = 'cb5f7550ce814ad6b74f515651f72b79';
+    key = '';
 
     getCurrentForecast(latitude: number, longitude: number) {
         let url = `${this.baseUrl}/current?key=${this.key}&lat=${latitude}&lon=${longitude}&units=I`; 
@@ -41,7 +41,7 @@ export class WeatherBitApiService extends ApiService {
 })
 export class PositionStackApiService extends ApiService {
     baseUrl = 'http://api.positionstack.com/v1';
-    key = '4e1d9e890cc83764371967a10d4f7be9';
+    key = '';
 
     getForwardSearch(search: string) {
         //&limit=1
