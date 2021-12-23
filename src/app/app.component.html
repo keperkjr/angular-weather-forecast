@@ -41,27 +41,27 @@
 
     <ng-template #notLoading>
         <section class="forecast-container">
-            <app-forecast-location *ngIf="currentLocation"
-                [location]="currentLocation"
+            <app-forecast-location *ngIf="dataStore.currentLocation"
+                [location]="dataStore.currentLocation"
             >
             </app-forecast-location>
             <div class="current-forecast-title">
                 <h2>Right Now</h2>
             </div>            
-            <app-current-forecast *ngIf="currentForecast"
-                [forecast]="currentForecast"
+            <app-current-forecast *ngIf="dataStore.currentForecast"
+                [forecast]="dataStore.currentForecast"
             ></app-current-forecast>
         </section>
 
         <section class="forecast-container">
             <div class="daily-forecast-title">
-                <h2> <span *ngIf="currentDailyForecast">{{ currentDailyForecast.length }}</span> Day Forecast</h2>
+                <h2> <span *ngIf="dataStore.currentDailyForecast">{{ dataStore.currentDailyForecast.length }}</span> Day Forecast</h2>
             </div>
-            <app-carousel [data]="currentDailyForecast">
+            <app-carousel [data]="dataStore.currentDailyForecast">
                 <ng-template let-item>
                     <app-daily-forecast 
                         [forecast]="item"
-                        [timezone]="currentForecast.timezone"
+                        [timezone]="dataStore.currentForecast.timezone"
                     >
                     </app-daily-forecast>
                 </ng-template>

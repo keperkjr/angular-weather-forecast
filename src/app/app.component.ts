@@ -14,6 +14,7 @@ import { PositionStackApiService, WeatherBitApiService } from './services/api.se
 import { Utils } from './utils';
 import { ForecastLocationSearch } from './models/forecastlocationsearch';
 import { RuntimeError } from './models/errors';
+import { DataStoreService } from './services/data-store.service';
 
 @Component({
   selector: 'app-root',
@@ -27,19 +28,11 @@ export class AppComponent implements OnInit {
     debug = true;
 
     isLoading = false;
-    initialLocation!: PositionStack.Location;
-    currentLocation!: PositionStack.Location;
-    currentForecast!: WeatherBit.Current.Forecast;
-    currentDailyForecast!: WeatherBit.Daily.Forecast[];
 
     baseUrl: string;
-    lastSearchData = {
-        searchQuery: '',
-        longitude: 0,
-        latitude: 0
-    };
           
-    constructor(private http: HttpClient, private positionStackApi: PositionStackApiService, private weatherBitApi: WeatherBitApiService) { 
+    constructor(private http: HttpClient, private positionStackApi: PositionStackApiService
+        , private weatherBitApi: WeatherBitApiService, public dataStore: DataStoreService) { 
         this.baseUrl = location.href;
     }
 
@@ -87,15 +80,15 @@ export class AppComponent implements OnInit {
             throw new RuntimeError.ForecastLocationError(message, ForecastLocationSearch.Type.IP);
         }
 
-        this.initialLocation = locationResults.data[0];
-        let longitude = this.initialLocation.longitude;
-        let latitude = this.initialLocation.latitude;
+        this.dataStore.initialLocation = locationResults.data[0];
+        let longitude = this.dataStore.initialLocation.longitude;
+        let latitude = this.dataStore.initialLocation.latitude;
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.currentForecast = forecast.current;
-        this.currentDailyForecast = forecast.daily
-        this.currentLocation = this.initialLocation;
+        this.dataStore.currentForecast = forecast.current;
+        this.dataStore.currentDailyForecast = forecast.daily
+        this.dataStore.currentLocation = this.dataStore.initialLocation;
     }
 
     async getIPAddress(): Promise<any> {
@@ -103,17 +96,17 @@ export class AppComponent implements OnInit {
     }    
       
     async querySearch(searchQuery: string) {
-        let searchLocation = this.currentLocation;
+        let searchLocation = this.dataStore.currentLocation;
         if (this.locationApiAvailable && 
-            (this.currentLocation == null || this.lastSearchData.searchQuery != searchQuery)) {
+            (this.dataStore.currentLocation == null || this.dataStore.lastSearchData.searchQuery != searchQuery)) {
             let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.SearchQuery, {
                 searchQuery: searchQuery
             });
             searchLocation = locationResults.data[0];
 
             // Get the location that is the shortest distance from the user
-            if (this.initialLocation != null) {
-                searchLocation = PositionStack.getNearestLocation(this.initialLocation.latitude, this.initialLocation.longitude, locationResults);
+            if (this.dataStore.initialLocation != null) {
+                searchLocation = PositionStack.getNearestLocation(this.dataStore.initialLocation.latitude, this.dataStore.initialLocation.longitude, locationResults);
             }
         }
 
@@ -122,20 +115,20 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.currentForecast = forecast.current;  
-        this.currentDailyForecast = forecast.daily; 
-        this.currentLocation = searchLocation;
+        this.dataStore.currentForecast = forecast.current;  
+        this.dataStore.currentDailyForecast = forecast.daily; 
+        this.dataStore.currentLocation = searchLocation;
 
-        this.lastSearchData.longitude = longitude;
-        this.lastSearchData.latitude = latitude;
-        this.lastSearchData.searchQuery = searchQuery;        
+        this.dataStore.lastSearchData.longitude = longitude;
+        this.dataStore.lastSearchData.latitude = latitude;
+        this.dataStore.lastSearchData.searchQuery = searchQuery;        
     }
 
     async gpsSearch(latitude: number, longitude: number) {   
-        let searchLocation = this.currentLocation;     
+        let searchLocation = this.dataStore.currentLocation;     
         if (this.locationApiAvailable && 
-            (this.currentLocation == null || this.lastSearchData.longitude != longitude || this.lastSearchData.latitude != latitude)) {
-            this.lastSearchData.searchQuery = '';
+            (this.dataStore.currentLocation == null || this.dataStore.lastSearchData.longitude != longitude || this.dataStore.lastSearchData.latitude != latitude)) {
+            this.dataStore.lastSearchData.searchQuery = '';
 
             let locationResults = await this.getForecastLocation(ForecastLocationSearch.Type.GPS, {
                 latitude, longitude
@@ -145,12 +138,12 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.getForecast(latitude, longitude);
 
-        this.currentForecast = forecast.current;
-        this.currentDailyForecast = forecast.daily; 
-        this.currentLocation = searchLocation;
+        this.dataStore.currentForecast = forecast.current;
+        this.dataStore.currentDailyForecast = forecast.daily; 
+        this.dataStore.currentLocation = searchLocation;
 
-        this.lastSearchData.longitude = longitude;
-        this.lastSearchData.latitude = latitude;        
+        this.dataStore.lastSearchData.longitude = longitude;
+        this.dataStore.lastSearchData.latitude = latitude;        
     }
     
     async getForecast(latitude: number, longitude: number) {
@@ -215,7 +208,7 @@ export class AppComponent implements OnInit {
                     throw new Error(`Unknown search type: ${type}`);
                     break;
             }
-            if (this.currentLocation != null) {
+            if (this.dataStore.currentLocation != null) {
                 // console.log('Selected Location:', this.currentLocation);
             }
         } catch (error) {
