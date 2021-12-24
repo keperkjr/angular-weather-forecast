@@ -34,7 +34,6 @@
     background-color: darkblue;
 }
 .carousel-content-container {
-    overflow: hidden;
     width: 95%;
 }
 .carousel-progress-container {
