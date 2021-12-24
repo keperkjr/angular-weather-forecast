@@ -22,6 +22,9 @@ export class CarouselComponent implements OnInit {
     @ViewChild('progressScroll')
     progressScroll!: ElementRef;
 
+    @ViewChild('progressBar')
+    progressBar!: ElementRef;
+
     @Input()
     data!: any[];
 
@@ -33,6 +36,8 @@ export class CarouselComponent implements OnInit {
 
     progressBarWidth: number = 0;
     progressScrollLeft: number = 0;
+
+    buttonClicked = false;
 
     constructor() { }
 
@@ -49,11 +54,13 @@ export class CarouselComponent implements OnInit {
 
     scrollLeft() {
         this.enableScrollBehavior();
+        this.buttonClicked = true;
         this.adjustScrollPosition(-this.buttonScrollWidth);
     }
 
     scrollRight() {
         this.enableScrollBehavior();
+        this.buttonClicked = true;
         this.adjustScrollPosition(this.buttonScrollWidth);
     } 
     
@@ -75,25 +82,50 @@ export class CarouselComponent implements OnInit {
         let startPos = 0;
         let element = this.content.nativeElement;
 
+        // element.addEventListener('touchstart', (event: any) => {
+        //     this.disableScrollBehavior();
+        //     startPos = event.touches[0].pageX;
+        // });
+
+        // element.addEventListener('touchmove', (event: any) => {
+        //     let adjustment = startPos - event.touches[0].pageX;
+        //     // If 'adjustment' is positive, user made a movement the right direction
+        //     // else user made a movement in the left direction
+        //     this.adjustScrollPosition(adjustment);                          
+        // });
+
         element.addEventListener('touchstart', (event: any) => {
+            this.buttonClicked = false;
             this.disableScrollBehavior();
-            startPos = event.touches[0].pageX;
         });
 
-        element.addEventListener('touchmove', (event: any) => {
-            let adjustment = startPos - event.touches[0].pageX;
-            // If 'adjustment' is positive, user made a movement the right direction
-            // else user made a movement in the left direction
-            this.adjustScrollPosition(adjustment);                          
-        });
+        element.addEventListener('scroll', (event: any) => {
+            if (this.buttonClicked) {
+                return;
+            } 
+            this.adjustScrollPosition(0); 
+        });        
     } 
 
     disableScrollBehavior() {
         this.content.nativeElement.style['scroll-behavior'] = 'unset';
+        if (this.progressScroll && this.progressScroll.nativeElement) {
+            this.progressScroll.nativeElement.style['transition'] = 'unset';
+        } 
+        if (this.progressBar && this.progressBar.nativeElement) {
+            this.progressBar.nativeElement.style['transition'] = 'unset';
+        }        
     }
 
     enableScrollBehavior() {
         this.content.nativeElement.style['scroll-behavior'] = null;
+
+        if (this.progressScroll && this.progressScroll.nativeElement) {
+            this.progressScroll.nativeElement.style['transition'] = null;
+        }
+        if (this.progressBar && this.progressBar.nativeElement) {
+            this.progressBar.nativeElement.style['transition'] = null;
+        }          
     }
 
 }

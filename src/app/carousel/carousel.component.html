@@ -17,9 +17,11 @@
     </div>
     <div class="carousel-content-container">
         <div #content class="carousel-content">
-            <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
+            <div>
+                <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
+            </div>
         </div> 
-        <div class="carousel-progress-container">
+        <div #progressContainer class="carousel-progress-container">
             <ng-container
                 *ngTemplateOutlet="scrollStyle && scrollStyle == 'progress-scroll' ? scroll : bar">
             </ng-container>   
@@ -27,7 +29,7 @@
                 <div #progressScroll class="carousel-progress-scroll" [ngStyle]="{'left': progressScrollLeft + 'px'}"></div>
             </ng-template>  
             <ng-template #bar>
-                <div class="carousel-progress-bar" [ngStyle]="{'width': progressBarWidth + '%'}"></div>
+                <div #progressBar class="carousel-progress-bar" [ngStyle]="{'width': progressBarWidth + '%'}"></div>
             </ng-template>                             
         </div>              
     </div>

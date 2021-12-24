@@ -18,6 +18,7 @@
         <input type="text" [(ngModel)]="searchQuery" name="search" 
             placeholder="Search by city, state, zip code, region, etc."
             (keyup.enter)="onSearchQueryLocation()"
+            autocomplete="off"
             class="input-location-search"
         >        
         <button mat-flat-button color="primary" class="btn-location-search"
