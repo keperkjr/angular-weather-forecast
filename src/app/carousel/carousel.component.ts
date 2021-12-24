@@ -79,21 +79,7 @@ export class CarouselComponent implements OnInit {
 
     // Horizontal touch scroll
     addTouchScroll() {
-        let startPos = 0;
         let element = this.content.nativeElement;
-
-        // element.addEventListener('touchstart', (event: any) => {
-        //     this.disableScrollBehavior();
-        //     startPos = event.touches[0].pageX;
-        // });
-
-        // element.addEventListener('touchmove', (event: any) => {
-        //     let adjustment = startPos - event.touches[0].pageX;
-        //     // If 'adjustment' is positive, user made a movement the right direction
-        //     // else user made a movement in the left direction
-        //     this.adjustScrollPosition(adjustment);                          
-        // });
-
         element.addEventListener('touchstart', (event: any) => {
             this.buttonClicked = false;
             this.disableScrollBehavior();
