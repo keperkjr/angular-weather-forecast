@@ -14,7 +14,7 @@ interface ForecastData {
 })
 export class DataStoreService {
 
-    private ipAddressLocation!: PositionStack.Location;
+    private userLocation!: PositionStack.Location;
         
     baseUrl!: string;
     lastSearchData: ForecastLocationSearch.Options = {
@@ -32,8 +32,8 @@ export class DataStoreService {
         
     constructor() { }
 
-    getIPAddressLocation(): PositionStack.Location {
-        return this.ipAddressLocation;
+    getUserLocation(): PositionStack.Location {
+        return this.userLocation;
     }
     
     getCurrentForecastLocation(): PositionStack.Location {
@@ -48,8 +48,8 @@ export class DataStoreService {
         return this.forecastData.currentDailyForecast;
     }       
 
-    setIPAddressLocation(data: any) {
-        this.ipAddressLocation = data;
+    setUserLocation(data: PositionStack.Location) {
+        this.userLocation = data;
     }
 
     setCurrentForecast(data: ForecastData) { 
@@ -63,10 +63,11 @@ export class DataStoreService {
     lastSearchMatches(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
         switch (type) {
             case ForecastLocationSearch.Type.IP:
-                return this.lastSearchData.longitude == options.ipAddress && this.lastSearchData.latitude == options.latitude;
+                return this.lastSearchData.ipAddress == options.ipAddress;
                 break;            
             case ForecastLocationSearch.Type.GPS:
-                return this.lastSearchData.longitude == options.longitude && this.lastSearchData.latitude == options.latitude;
+                return this.lastSearchData.longitude == options.longitude 
+                    && this.lastSearchData.latitude == options.latitude;
                 break;
             case ForecastLocationSearch.Type.SearchQuery:
                 return this.lastSearchData.searchQuery == options.searchQuery;
@@ -77,7 +78,9 @@ export class DataStoreService {
 
     copyProps(source: any, destination: any) {
         for (let prop in source) {
-            destination[prop] = source[prop];
+            if (source[prop] != undefined) {
+                destination[prop] = source[prop];                
+            }
         }        
     }
 }

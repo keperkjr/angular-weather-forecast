@@ -24,7 +24,7 @@ import { DataStoreService } from './services/data-store.service';
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     
-    debug = false;
+    debug = true;
 
     locationApiAvailable = true;
     isLoading = false;
@@ -80,7 +80,7 @@ export class AppComponent implements OnInit {
     }
 
     async ipAddressSearch() {
-        let searchLocation = this.dataStore.getIPAddressLocation();
+        let searchLocation = this.dataStore.getUserLocation();
         
         let ipData = await this.getIPAddress();
         let ipAddress = ipData.ip;
@@ -105,7 +105,7 @@ export class AppComponent implements OnInit {
             throw new RuntimeError.ForecastError(message);
         }
 
-        this.dataStore.setIPAddressLocation(searchLocation);
+        this.dataStore.setUserLocation(searchLocation);
 
         this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
@@ -131,8 +131,8 @@ export class AppComponent implements OnInit {
             searchLocation = locationResults.data[0];
 
             // Get the location that is the shortest distance from the user
-            if (this.dataStore.getIPAddressLocation() != null) {
-                searchLocation = PositionStack.getNearestLocation(this.dataStore.getIPAddressLocation().latitude, this.dataStore.getIPAddressLocation().longitude, locationResults);
+            if (this.dataStore.getUserLocation() != null) {
+                searchLocation = PositionStack.getNearestLocation(this.dataStore.getUserLocation().latitude, this.dataStore.getUserLocation().longitude, locationResults);
             }
         }
         
@@ -168,6 +168,8 @@ export class AppComponent implements OnInit {
 
         let forecast = await this.weatherBitApi.getForecast(latitude, longitude);
 
+        this.dataStore.setUserLocation(searchLocation);
+        
         this.dataStore.setCurrentForecast({
             currentForecast: forecast.current,
             currentDailyForecast: forecast.daily,
