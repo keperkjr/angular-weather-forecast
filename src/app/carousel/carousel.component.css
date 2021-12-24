@@ -29,7 +29,6 @@
     white-space: nowrap;
     scroll-behavior: smooth;
     overflow-x: scroll; 
-    -webkit-overflow-scrolling: touch;
 }
 .carousel-btn {
     background-color: darkblue;

@@ -17,19 +17,17 @@
     </div>
     <div class="carousel-content-container">
         <div #content class="carousel-content">
-            <div>
-                <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
-            </div>
+            <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
         </div> 
         <div #progressContainer class="carousel-progress-container">
             <ng-container
                 *ngTemplateOutlet="scrollStyle && scrollStyle == 'progress-scroll' ? scroll : bar">
             </ng-container>   
             <ng-template #scroll> 
-                <div #progressScroll class="carousel-progress-scroll" [ngStyle]="{'left': progressScrollLeft + 'px'}"></div>
+                <div #progressScroll class="carousel-progress-scroll" [ngStyle]="{'left': progressScrollLeft + 'px', 'transition': progressTransition}"></div>
             </ng-template>  
             <ng-template #bar>
-                <div #progressBar class="carousel-progress-bar" [ngStyle]="{'width': progressBarWidth + '%'}"></div>
+                <div class="carousel-progress-bar" [ngStyle]="{'width': progressBarWidth + '%', 'transition': progressTransition}"></div>
             </ng-template>                             
         </div>              
     </div>

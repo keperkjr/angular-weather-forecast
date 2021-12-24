@@ -22,9 +22,6 @@ export class CarouselComponent implements OnInit {
     @ViewChild('progressScroll')
     progressScroll!: ElementRef;
 
-    @ViewChild('progressBar')
-    progressBar!: ElementRef;
-
     @Input()
     data!: any[];
 
@@ -38,6 +35,8 @@ export class CarouselComponent implements OnInit {
     progressScrollLeft: number = 0;
 
     buttonClicked = false;
+
+    progressTransition!: string | null;
 
     constructor() { }
 
@@ -53,14 +52,14 @@ export class CarouselComponent implements OnInit {
     }
 
     scrollLeft() {
-        this.enableScrollBehavior();
         this.buttonClicked = true;
+        this.enableScrollBehavior();
         this.adjustScrollPosition(-this.buttonScrollWidth);
     }
 
     scrollRight() {
-        this.enableScrollBehavior();
         this.buttonClicked = true;
+        this.enableScrollBehavior();
         this.adjustScrollPosition(this.buttonScrollWidth);
     } 
     
@@ -93,25 +92,13 @@ export class CarouselComponent implements OnInit {
         });        
     } 
 
-    disableScrollBehavior() {
-        this.content.nativeElement.style['scroll-behavior'] = 'unset';
-        if (this.progressScroll && this.progressScroll.nativeElement) {
-            this.progressScroll.nativeElement.style['transition'] = 'unset';
-        } 
-        if (this.progressBar && this.progressBar.nativeElement) {
-            this.progressBar.nativeElement.style['transition'] = 'unset';
-        }        
+    disableScrollBehavior() { 
+        this.content.nativeElement.style['scroll-behavior'] = 'unset';  
+        this.progressTransition = 'unset';     
     }
 
-    enableScrollBehavior() {
-        this.content.nativeElement.style['scroll-behavior'] = null;
-
-        if (this.progressScroll && this.progressScroll.nativeElement) {
-            this.progressScroll.nativeElement.style['transition'] = null;
-        }
-        if (this.progressBar && this.progressBar.nativeElement) {
-            this.progressBar.nativeElement.style['transition'] = null;
-        }          
+    enableScrollBehavior() {   
+        this.content.nativeElement.style['scroll-behavior'] = null;  
+        this.progressTransition = null;       
     }
-
 }
