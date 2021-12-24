@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit() {
-        if (!this.debug) {
+        if (!this.debug && this.hasAPIKeys()) {
             this.isLoading = true;
             this.loadInitialForecast().then(() => {
                 console.log('Initial forecast load complete');
@@ -45,9 +45,11 @@ export class AppComponent implements OnInit {
                 console.log(error); 
                 this.isLoading = false;              
             });
-        }
-        
-        this.showAPINotice();
+        }        
+    }
+
+    ngAfterViewInit(): void {
+        this.maybeShowAPINotice();
     }
 
     async getIPAddress(): Promise<any> {
@@ -204,17 +206,21 @@ export class AppComponent implements OnInit {
             }
         } catch (error) {
             Utils.displayError(error);
-            this.showAPINotice();
+            this.maybeShowAPINotice();
         } finally {
             this.isLoading = false;
         }
     } 
 
-    showAPINotice() {
-        if (this.positionStackApi.key.length == 0) {
+    hasAPIKeys() {
+        return this.positionStackApi.hasKey() && this.weatherBitApi.hasKey();
+    }
+
+    maybeShowAPINotice() {
+        if (!this.positionStackApi.hasKey()) {
             alert('A https://positionstack.com/ API Key is not defined. Please register an account to obtain your own free api key, and then set it within the PositionStackApiService class in the app/services folder');
         } 
-        if (this.weatherBitApi.key.length == 0) {
+        if (!this.weatherBitApi.hasKey()) {
             alert('A https://www.weatherbit.io/ API Key is not defined. Please register an account to obtain your own free api key, and then set it within the WeatherBitApiService class in the app/services folder');
         }
     }   
