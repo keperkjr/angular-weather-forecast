@@ -23,12 +23,11 @@ import { DataStoreService } from './services/data-store.service';
 })
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
+    
+    debug = false;
+
     locationApiAvailable = true;
-
-    debug = true;
-
     isLoading = false;
-
     baseUrl: string;
           
     constructor(private http: HttpClient, private positionStackApi: PositionStackApiService
@@ -201,7 +200,7 @@ export class AppComponent implements OnInit {
                     break;
             }
             if (this.dataStore.getCurrentForecastLocation() != null) {
-                // console.log('Selected Location:', this.currentLocation);
+                // console.log('Selected Location:', this.currentForecastLocation);
             }
         } catch (error) {
             Utils.displayError(error);

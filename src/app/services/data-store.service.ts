@@ -48,7 +48,7 @@ export class DataStoreService {
         return this.forecastData.currentDailyForecast;
     }       
 
-    setIPAddressLocation(data: PositionStack.Location) {
+    setIPAddressLocation(data: any) {
         this.ipAddressLocation = data;
     }
 
@@ -63,7 +63,7 @@ export class DataStoreService {
     lastSearchMatches(type: ForecastLocationSearch.Type, options: ForecastLocationSearch.Options) {
         switch (type) {
             case ForecastLocationSearch.Type.IP:
-                return this.lastSearchData.ipAddress == options.ipAddress;
+                return this.lastSearchData.longitude == options.ipAddress && this.lastSearchData.latitude == options.latitude;
                 break;            
             case ForecastLocationSearch.Type.GPS:
                 return this.lastSearchData.longitude == options.longitude && this.lastSearchData.latitude == options.latitude;
@@ -72,7 +72,7 @@ export class DataStoreService {
                 return this.lastSearchData.searchQuery == options.searchQuery;
                 break;                
         }
-        return true;
+        return false;
     }
 
     copyProps(source: any, destination: any) {
