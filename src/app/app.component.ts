@@ -60,8 +60,6 @@ export class AppComponent implements OnInit {
         } catch (error) {
             if (error instanceof RuntimeError.ForecastLocationError) {
                 this.locationApiAvailable = false;
-                console.log('Location api is unavailable, getting forecast from gps position');
-
                 try {
                     // console.log(error);
                     console.log('Location api is unavailable, getting forecast from gps position');
