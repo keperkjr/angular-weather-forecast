@@ -1,3 +1,10 @@
+// ============================================================================
+//    Author: Kenneth Perkins
+//    Date:   Dec 22, 2021
+//    Taken From: http://programmingnotes.org/
+//    File:  data-store.service.ts
+//    Description: Services that holds common data for the project
+// ============================================================================
 import { Injectable } from '@angular/core';
 import { ForecastLocationSearch } from '../models/forecastlocationsearch';
 import { PositionStack } from '../models/positionstack';
@@ -79,7 +86,7 @@ export class DataStoreService {
         return false;
     }
 
-    copyProps(source: any, destination: any) {
+    private copyProps(source: any, destination: any) {
         for (let prop in source) {
             if (source[prop] != undefined) {
                 destination[prop] = source[prop];                
