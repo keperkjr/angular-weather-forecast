@@ -16,7 +16,7 @@
         </button>                
     </div>
     <div class="carousel-content-container">
-        <div #content class="carousel-content">
+        <div #content class="carousel-content" [ngStyle]="{'scroll-behavior': contentScrollBehavior}">
             <ng-container *ngFor="let datum of data; template: tmpl"></ng-container>
         </div> 
         <div #progressContainer class="carousel-progress-container">

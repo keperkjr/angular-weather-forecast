@@ -200,7 +200,7 @@ export class AppComponent implements OnInit {
                     break;
             }
             if (this.dataStore.getCurrentForecastLocation() != null) {
-                // console.log('Selected Location:', this.currentForecastLocation);
+                // console.log('Selected Location:', this.dataStore.getCurrentForecastLocation());
             }
         } catch (error) {
             Utils.displayError(error);

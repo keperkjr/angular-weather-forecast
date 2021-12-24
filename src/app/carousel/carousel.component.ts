@@ -36,6 +36,7 @@ export class CarouselComponent implements OnInit {
 
     buttonClicked = false;
 
+    contentScrollBehavior!: string | null;
     progressTransition!: string | null;
 
     constructor() { }
@@ -93,12 +94,12 @@ export class CarouselComponent implements OnInit {
     } 
 
     disableScrollBehavior() { 
-        this.content.nativeElement.style['scroll-behavior'] = 'unset';  
+        this.contentScrollBehavior = 'unset'; 
         this.progressTransition = 'unset';     
     }
 
-    enableScrollBehavior() {   
-        this.content.nativeElement.style['scroll-behavior'] = null;  
+    enableScrollBehavior() {
+        this.contentScrollBehavior = null; 
         this.progressTransition = null;       
     }
 }
