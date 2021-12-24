@@ -71,7 +71,10 @@ export class DataStoreService {
                 break;
             case ForecastLocationSearch.Type.SearchQuery:
                 return this.lastSearchData.searchQuery == options.searchQuery;
-                break;                
+                break;     
+            default:
+                throw new Error(`Unknown search type: ${type}`);
+                break;                           
         }
         return false;
     }
