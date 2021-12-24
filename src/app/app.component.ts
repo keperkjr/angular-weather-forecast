@@ -24,7 +24,7 @@ import { DataStoreService } from './services/data-store.service';
 export class AppComponent implements OnInit {
     title = 'My Programming Notes - Angular Weather Forecast';
     
-    debug = true;
+    debug = false;
 
     locationApiAvailable = true;
     isLoading = false;
