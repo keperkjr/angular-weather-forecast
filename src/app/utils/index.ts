@@ -87,6 +87,7 @@ export namespace Utils {
                     break;
                 default:
                     alert(`Location could not be detected. Please try again!`);
+                    break;
             }
         } else if (error instanceof RuntimeError.ForecastLocationError) {
             switch (error.code) {
@@ -99,6 +100,7 @@ export namespace Utils {
                     break;
                 default:
                     alert(`Unable to display forecast. Location could not be detected. Please try again!`);
+                    break;
             }
         } else if (error instanceof RuntimeError.ForecastError) {
             alert(`There currently is no weather forecast information available for the selected location. Please try a different location!`);
