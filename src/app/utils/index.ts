@@ -90,11 +90,10 @@ export namespace Utils {
             }
         } else if (error instanceof RuntimeError.ForecastLocationError) {
             switch (error.code) {
-                case ForecastLocationSearch.Type.IP:                    
-                    break;
                 case ForecastLocationSearch.Type.SearchQuery:
                     alert(`Unable to display forecast. Location could not be determined from the entered search term. Please enter another search term and try again!`);               
                     break;
+                case ForecastLocationSearch.Type.IP: 
                 case ForecastLocationSearch.Type.GPS:
                     alert(`Unable to display forecast. Location could not be detected from your current position. Please try again!`);
                     break;
